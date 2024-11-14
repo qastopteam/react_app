@@ -11,22 +11,22 @@ const Overview = () => {
 </div>
 
 <div class="flex gap-4 p-2">
-  <div class="flex flex-col gap-4 w-2/3">
-    <div id="sub_page_box">
+  <div class="flex flex-row gap-4">
+    <div id="sub_page_box" class="gap-4 w-1/3">
       <div id="sub_page_headers">
-        <h3>Quality Engineering</h3>
+        <h5>Quality Engineering</h5>
       </div>
-      <div class="p-2">
+      <div id="sub_page_content">
         We as a team deliver quality test and certify your product bug free by
         running multi-level, multi-browser and multi-order tests through
         accelerators and automated tools and cutting edge technologies.
       </div>
     </div>
-    <div id="sub_page_box">
+    <div id="sub_page_box" class="gap-4 w-1/3">
       <div id="sub_page_headers">
-        <h3>Through the Director's word</h3>
+        <h5>Through the Director's word</h5>
       </div>
-      <div class="p-2">
+      <div id="sub_page_content">
         Quality Engineering has been established as a practice in Tiger from the
         year 2020 and is evolving since then from a 4 member team to 100 members
         momentarily over the years. The team have strived through excellence by
@@ -35,18 +35,16 @@ const Overview = () => {
         capability demos.
       </div>
     </div>
-  </div>
-  <div>
-    <div id="sub_page_box">
+    <div id="sub_page_box" class="gap-4 w-1/3">
       <div id="sub_page_headers">
-        <h3>Weekly-Highlights</h3>
+        <h5>Weekly-Highlights</h5>
       </div>
-      <div class="p-2">
+      <div id="sub_page_content">
         <p>
-          - The practice hits the head account to 100 and marks a milestone.
+          The practice hits the head account to 100 and marks a milestone.
         </p>
         <p>
-          - The Full-Stack QE internal training for Batch-1 is scheduled for Apr
+          The Full-Stack QE internal training for Batch-1 is scheduled for Apr
           2024
         </p>
       </div>

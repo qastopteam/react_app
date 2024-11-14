@@ -110,7 +110,7 @@ const DELeaveTracker = () => {
             selectElement.options
             [selectElement.selectedIndex].textContent;
         //lead_name = document.getElementById("PracticeLead").value
-        document.querySelector('.practice_lead').textContent = lead_name;
+        //document.querySelector('.practice_lead').textContent = lead_name;
         let emps= ['-- Select --'];
         for (let emp of employees){
         if (emp.lead==lead_name){
@@ -137,7 +137,7 @@ const DELeaveTracker = () => {
         }
         }
         console.log(projects);
-        document.querySelector('.resource_name').textContent = resource_name;
+        //document.querySelector('.resource_name').textContent = resource_name;
     }
 
     function getLeaveType() {
@@ -145,8 +145,8 @@ const DELeaveTracker = () => {
         //document.querySelector('.leave_type').textContent = output;
         document.getElementById('leave_type_alert').textContent = "";
     }
-    function getDateDiff(){
-        let date1 = document.getElementById("StartDate").value
+    function gespanateDiff(){
+        let date1 = document.getElementById("Starspanate").value
         let date2 = document.getElementById("EndDate").value
         var d1 = new Date(date1);
         var d2 = new Date(date2);
@@ -156,7 +156,7 @@ const DELeaveTracker = () => {
     }
     function getChooseTracker() {
         let Tracker ="Leave Tracker"
-        getDateDiff();
+        gespanateDiff();
     }
     function AlertFunc() {
         document.getElementById('alert').textContent = "Please Fill the Mandatory Fields(*)";
@@ -221,91 +221,59 @@ const DELeaveTracker = () => {
     return(
         <>
         <div id="page_header">
-        <h1>DataEntry</h1>
+        <h1>Leave Tracker</h1>
         </div>
-        <div id="part1" style={{width: '48%', float: 'left', display: 'inline'}}>
-    <div>
-        <div>
-            <h5>Input Form</h5>
-        </div>
-        <div id="AppliedFilters">
-        <table>
-            <tbody>
-                <tr><td id="col_label">Practice Lead<span>*</span><td>:</td></td><td  class="practice_lead"><span id="mand_fields">-- Select --</span></td></tr>
-                <tr><td id="col_label">Resource Name<span>*</span><td>:</td></td><td class="resource_name"><span id="mand_fields">-- Select --</span></td></tr>
-            </tbody>
-          </table>
-        </div>
-    </div>
-    <div>
+        <div id="part1">
         <div id="EntryForm">
-        <table>
-        <tbody>
-        <tr>
-            <td id="col_label">Leave Type<span>*</span><td>:</td></td>
-            <td>
-                <select class="select_Dropdown_Input" onChange={getLeaveType} name="LeaveType" id="LeaveType">
-                {leave_types.map((leave_type, index) => (
-                    <option key={index} value={leave_type}>
-                      {leave_type}
-                    </option>
-                  ))}
-                </select>
-            </td>
-        </tr>
-        <tr><td id="leave_type_alert"></td></tr>
-        <tr>
-            <td id="col_label">Start Date<td>:</td></td>
-            <td><input class="text_Input" type="date" id="StartDate" onChange={getDateDiff} name="trip-start" value="2024-05-22" min="2018-01-01" max="2025-12-31" /></td>
-        </tr>
-        <tr>
-            <td id="col_label">End Date<td>:</td></td>
-            <td><input class="text_Input" type="date" id="EndDate" onchange={getDateDiff} name="trip-end" value="2024-05-22" min="2018-01-01" max="2025-12-31" /></td>
-        </tr>
-        <tr>
-            <td id="col_label">Total Working Days<td>:</td></td>
-            <td id="total_working_days">0</td>
-        </tr>
-        </tbody>
-    </table>
-        </div>
-        <button class="default_Button" id="Submit_Button" onClick={sendInput}>
-            Submit
-        </button>
-        <label id="alert"></label>
-    </div>
-</div>
-<div id="part2" style={{width: '48%', float: 'left', display: 'inline'}}>
-    <div>
-        <div>
-            <h5>Apply Filters</h5>
-        </div>
-        <div id="ApplyFilters">
-        <table>
-          <tbody>
-          <tr>
-              <td id="col_label">Practice Lead<td>:</td></td>
-              <td>
-                    <select class="select_Dropdown_Input" onChange={getPracticeLead} name="PracticeLead" id="PracticeLead">
+        <div class='filters'>
+              <label id="col_label" class='flex justify-between'><span class="text-start">Practice Lead</span><span class="text-start">:</span></label>
+              <span>
+                    <select style={{width:'350px'}} class="select_Dropdown_Input" onChange={getPracticeLead} name="PracticeLead" id="PracticeLead">
                     {leads.map((lead, index) => (
                     <option key={index} value={lead}>
                       {lead}
                     </option>
                   ))}
                     </select>
-              </td>
-          </tr>
-          <tr>
-              <td id="col_label">Resource Name<td>:</td></td>
-              <td>
-                  <select class="select_Dropdown_Input" onChange={getResourceName} name="ResourceName" id="ResourceName">
+              </span>
+          </div>
+          <div class='filters'>
+              <label id="col_label" class='flex justify-between'><span class="text-start">Resource Name</span><span class="text-start">:</span></label>
+              <span>
+                  <select style={{width:'350px'}} class="select_Dropdown_Input" onChange={getResourceName} name="ResourceName" id="ResourceName">
                       <option  value="-- Select --">-- Select --</option>
                   </select>
-              </td>
-          </tr>
-          </tbody>
-      </table>
+              </span>
+          </div>
+        <div class='filters'>
+            <label id="col_label" class='flex justify-between'><span class="text-start">Leave Type*</span><span class="text-start">:</span></label>
+            <span>
+                <select style={{width:'350px'}} class="select_Dropdown_Input" onChange={getLeaveType} name="LeaveType" id="LeaveType">
+                {leave_types.map((leave_type, index) => (
+                    <option key={index} value={leave_type}>
+                      {leave_type}
+                    </option>
+                  ))}
+                </select>
+            </span>
         </div>
+        <div><span id="leave_type_alert"></span></div>
+        <div class='filters'>
+            <label id="col_label" class='flex justify-between'><span class="text-start">Start Date</span><span class="text-start">:</span></label>
+            <span><input class="text_Input" type="date" id="Starspanate" onChange={gespanateDiff} name="trip-start" value="2024-05-22" min="2018-01-01" max="2025-12-31" /></span>
+        </div>
+        <div class='filters'>
+            <label id="col_label" class='flex justify-between'><span class="text-start">End Date</span><span class="text-start">:</span></label>
+            <span><input class="text_Input" type="date" id="EndDate" onchange={gespanateDiff} name="trip-end" value="2024-05-22" min="2018-01-01" max="2025-12-31" /></span>
+        </div>
+        <div class='filters'>
+            <label id="col_label" class='flex justify-between'><span class="text-start">Total Working Days</span><span class="text-start">:</span></label>
+            <span id="total_working_days">0</span>
+        </div>
+        <button class="default_Button" id="Submit_Button" onClick={sendInput}>
+            Submit
+        </button>
+        <label id="alert"></label>
     </div>
     <div id="popup">
         <span class="popuptext" id="myPopup"></span>

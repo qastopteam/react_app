@@ -1,77 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
 const Accelerator = () => {
-
+  const [data, setData] = useState("");
     const itemsPerPage = 5; // Number of items per page
     let currentPage = 1;
-    const data = {
-      Comparator1: [
-        {
-          Category: "Data comparator",
-          Accelerator: "Tosca Custom Excel Report Generator",
-          SPOC: "Jeena",
-          Direct: "Link1",
-        },
-        {
-          Category: "Data comparator",
-          Accelerator: "Accelerator For Client Mars",
-          SPOC: "Jeena",
-          Direct: "Link4",
-        },
-        {
-          Category: "Data comparator",
-          Accelerator: "Accelerator For Client T-Mobile",
-          SPOC: "Jennifer",
-          Direct: "Link8",
-        },
-      ],
-      Comparator2: [
-        {
-          Category: "excel comparator",
-          Accelerator: "Test case Generator",
-          SPOC: "Thazhuva",
-          Direct: "Link2",
-        },
-        {
-          Category: "excel comparator",
-          Accelerator: "Accelerator For Client Prologis",
-          SPOC: "Thazhuva",
-          Direct: "Link6",
-        },
-        {
-          Category: "excel comparator",
-          Accelerator: "Accelerator For Client Carrier",
-          SPOC: "Jeena",
-          Direct: "Link9",
-        },
-      ],
-      Comparator3: [
-        {
-          Category: "web comparator",
-          Accelerator: "Icedq Test Accelerator",
-          SPOC: "Sivanash",
-          Direct: "Link3",
-        },
-        {
-          Category: "web comparator",
-          Accelerator: "JAPAN SF LANDING LAYER",
-          SPOC: "Jennifer",
-          Direct: "Link4",
-        },
-        {
-          Category: "web comparator",
-          Accelerator: "Accelerator For Client Merck",
-          SPOC: "Sivanash",
-          Direct: "Link7",
-        },
-        {
-          Category: "web comparator",
-          Accelerator: "Acc 10",
-          SPOC: "",
-          Direct: "Link10",
-        },
-      ],
-    };
   
     const renderResults = (filteredLinks) => {
       let results = ``;
@@ -81,7 +13,7 @@ const Accelerator = () => {
   
       paginatedItems.forEach(
         (link) =>
-          (results += `<div class="flex justify-between bg-white p-2 rounded-lg mt-2 border border-gray-300">
+          (results += `<div class="flex justify-between bg-white p-2 border-gray-300 border-bottom border-left border-right">
         <div class="w-1/4 text-left">${link.Category}</div>
         <div class="w-1/4 text-left">${link.Accelerator}</div>
         <div class="w-1/4 text-left">${link.SPOC}</div>
@@ -136,9 +68,56 @@ const Accelerator = () => {
     };
     
 
-    useEffect(() => {
-        renderResults(getFilteredLinks());
-      },[]);
+
+      useEffect(() => {
+        const fetchData = async () => {
+
+          const response = await fetch('http://127.0.0.1:5000//accs');
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const result = await response.json();
+          const Comp1=[];
+          const Comp2=[];
+          const Comp3=[];
+          result.forEach((item) => {
+            if(item[4]==="Data comparator"){
+              Comp1.push({
+                Accelerator: item[0],
+                Direct: item[1],
+                SPOC: item[2],
+                EmpID:item[3],
+                Category: item[4]
+              })
+            }
+            if(item[4]==="excel comparator"){
+              Comp2.push({
+                Accelerator: item[0],
+                Direct: item[1],
+                SPOC: item[2],
+                EmpID:item[3],
+                Category: item[4]
+              })
+            }
+            if(item[4]==="web comparator"){
+              Comp3.push({
+                Accelerator: item[0],
+                Direct: item[1],
+                SPOC: item[2],
+                EmpID:item[3],
+                Category: item[4]
+              })
+            }
+          });
+          const DBData={Comparator1:Comp1,Comparator2:Comp2,Comparator3:Comp3};
+          console.log("DBData",DBData)
+          setData(DBData); // Store the fetched data in state
+          renderResults(Object.values(DBData).flat());
+        };
+    
+        fetchData(); // Call the function to fetch data
+      }, []);
+
 
     return (  
         <>
@@ -150,9 +129,9 @@ const Accelerator = () => {
     <div class="flex flex-col gap-4">
       <div id="sub_page_box">
         <div id="sub_page_headers">
-          <h3>Quality Practice</h3>
+          <h5>Quality Practice</h5>
         </div>
-        <div class="p-2">
+        <div>
           The Quality Practice team intends to create test accelerators and POC
           (proof of concepts) on various testing models using cutting edge
           technologies on demand. The accelerators built are for Practice and
@@ -161,25 +140,25 @@ const Accelerator = () => {
       </div>
       <div id="sub_page_box">
         <div id="sub_page_headers">
-          <h3>Accelerators from Practice</h3>
+          <h5>Accelerators from Practice</h5>
         </div>
-        <div class="p-2">
+        <div>
           The Quality Practice team have the following accelerators for quick
           demo:
         </div>
       </div>
     </div>
-    <div>
+    <div class='d-flex align-items-stretch'>
       <div id="sub_page_box">
         <div id="sub_page_headers">
-          <h3>Practice - Council Updates</h3>
+          <h5>Practice - Council Updates</h5>
         </div>
-        <div class="p-2">
+        <div>
           <p>
-            - The practice hits the head account to 100 and marks a milestone.
+            The practice hits the head account to 100 and marks a milestone.
           </p>
           <p>
-            - The Full-Stack QE internal training for Batch-1 is scheduled for
+            The Full-Stack QE internal training for Batch-1 is scheduled for
             Apr 2024
           </p>
         </div>
@@ -188,8 +167,9 @@ const Accelerator = () => {
   </div>
 
   <div class="p-2">
-    <div class="bg-gray-200 p-1 rounded-lg flex justify-between items-center">
-      <h3 class="text-lg font-bold text-black-400">Accelerators</h3>
+   <div id="sub_page_box">
+    <div class="flex justify-between items-center p-1">
+      <h5 class="text-lg font-bold text-black-400">Accelerators</h5>
       <div class="flex gap-2">
         <select
           id="accelerators"
@@ -218,15 +198,15 @@ const Accelerator = () => {
         />
       </div>
     </div>
-    <div class="border border-solid border-slate-400 p-1">
-      <div class="flex justify-between bg-gray-400 p-2 rounded-lg">
+    
+      <div class="flex justify-between bg-gray-400 p-2 rounded-top">
         <div class="w-1/4 text-left font-bold">Category</div>
         <div class="w-1/4 text-left font-bold">Accelerator name</div>
         <div class="w-1/4 text-left font-bold">SPOC</div>
         <div class="w-1/4 text-left font-bold">References</div>
       </div>
-      <div id="results" class="mt-1 w-full max-h-[50vh] overflow-y-auto">
-      </div>
+      <div id="results" class="w-full max-h-[50vh] overflow-y-auto fs-0.75">
+      </div> 
       <div id="pagination" class="flex justify-center mt-4">
         <button id="prev" onClick={()=>{if (currentPage > 1) {
                                             currentPage--;

@@ -15,11 +15,10 @@ import DELeaveTracker from './deLeaveTracker';
 import Reporting from './reporting';
 import RAGStatus from './rag_status';
 import InterviewPanelists from './interview_panelists';
+import Governance from './governance';
+import Projects from './projects';
+import MyImage from './logo1.jpeg'
 
-
-const Home = () => <h2>Home Page</h2>;
-const About = () => <h2>About Page</h2>;
-const Contact = () => <h2>Contact Page</h2>;
 
 const App = () => {
   const [currentPage, setCurrentPage] = useState("");
@@ -46,17 +45,21 @@ const App = () => {
     responseData.Current_Tab=currentTab;
     const items = document.querySelectorAll('#Highlight_Tab');
     items.forEach(item => {
-        item.classList.remove('highlight');
+        item.querySelector('a').classList.remove('highlight');
+        item.querySelector('a').classList.add('non-highlight');
         if(item.innerText == responseData.Current_Tab){
-            item.classList.add('highlight');
+            item.querySelector('a').classList.remove('non-highlight');
+            item.querySelector('a').classList.add('highlight');
         }
     });
     const pages = document.querySelectorAll('#Highlight');
     pages.forEach(page => {
-        page.classList.remove('highlight');
+        page.querySelector('a').classList.remove('highlight');
+        page.querySelector('a').classList.add('non-highlight');
         if(responseData.Current_Page!=""){
-        if(page.innerText == responseData.Current_Page){
-            page.classList.add('highlight');
+        if(page.querySelector('span').innerText == responseData.Current_Page){
+            page.querySelector('a').classList.remove('non-highlight');
+            page.querySelector('a').classList.add('highlight');
         }}
     });
   }
@@ -72,7 +75,7 @@ const App = () => {
                 <button id="toggleSidebar" onClick={ToggleButton} class="toggle-btn">
                     <i class="fas fa-bars"></i>
                 </button>
-                     
+                <img src={MyImage} alt="Description of the image" style={{ width: '140px', height: '55px' }}/>
             </div>
         </div>
         <div class="flex">
@@ -84,7 +87,7 @@ const App = () => {
 
                     <div class="sidebar_section">
                     <div class="sidebar_section_main_header" id="Highlight_Tab">
-                    <li class="sidebar-item sidebar-main-item" style={{width:'80px',height:'90px'}} onClick={()=>{setCurrentTab("Overview");setCurrentPage("");ColorTPName();}}>
+                    <li class="sidebar-item sidebar-main-item" style={{width:'45px',height:'55px'}} onClick={()=>{setCurrentTab("Overview");setCurrentPage("");ColorTPName();}}>
                         <Link to="/home" id="page-link">Overview</Link>
                     </li>
                     </div>
@@ -93,53 +96,55 @@ const App = () => {
                         <Link to="/about"
                             id="page-link"
                         >
-                            <i class="fas fa-envelope"></i
-                            ><span>About Us</span>
+                            <i class="fas fa-envelope"></i>
+                            <span>About Us</span>
                         </Link>
                     </li>
                     <li class="sidebar-item sidebar-sub-item" id="Highlight" onClick={()=>{setCurrentTab("Overview");setCurrentPage("Accelerators");ColorTPName();}}>
                         <Link to="/accelerators"
                             id="page-link"
                         >
-                            <i class="fas fa-rocket"></i
-                            ><span>Accelerators</span>
+                            <i class="fas fa-rocket"></i>
+                            <span>Accelerators</span>
                         </Link>
                     </li>
+                    <span>.</span>
                     </div>
                     </div>
                     <div class="sidebar_section">
                     <div class="sidebar_section_main_header" id="Highlight_Tab">
-                    <li class="sidebar-item sidebar-main-item" style={{width:'95px',height:'105px'}} onClick={()=>{setCurrentTab("Governance");setCurrentPage("");ColorTPName();}}>
+                     <li class="sidebar-item sidebar-main-item" style={{width:'55px',height:'65px'}} onClick={()=>{setCurrentTab("Governance");setCurrentPage("");ColorTPName();}}>
                         
                         <Link to="/governance"
                             id="page-link"
                         >
                             <span>Governance</span>
                         </Link>
-                    </li>
+                     </li>
                     </div>
                         <div  class="sidebar_section_sub_header">
                         <li class="sidebar-item sidebar-sub-item" id="Highlight" onClick={()=>{setCurrentTab("Governance");setCurrentPage("Projects");ColorTPName();}}>
                             <Link to="/projects"
                                 id="page-link"
                             >
-                                <i class="fas fa-project-diagram"></i
-                                ><span>Projects</span>
+                                <i class="fas fa-project-diagram"></i>
+                                <span>Projects</span>
                             </Link>
                         </li>
                         <li class="sidebar-item sidebar-sub-item" id="Highlight" onClick={()=>{setCurrentTab("Governance");setCurrentPage("Resources");ColorTPName();}}>
                             <Link to="/resources"
                                 id="page-link"
                             >
-                                <i class="fas fa-book"></i
-                                ><span>Resources</span>
+                                <i class="fas fa-book"></i>
+                                <span>Resources</span>
                             </Link>
                         </li>
+                        <span>.</span>
                         </div>
                     </div>
                         <div class="sidebar_section">
                         <div class="sidebar_section_main_header" id="Highlight_Tab">
-                        <li class="sidebar-item sidebar-main-item" style={{width:'18px',height:'28px'}} onClick={()=>{setCurrentTab("Data_Entry");setCurrentPage("");ColorTPName();}}>
+                        <li class="sidebar-item sidebar-main-item" style={{width:'10px',height:'20px'}} onClick={()=>{setCurrentTab("Data_Entry");setCurrentPage("");ColorTPName();}}>
                             <Link to="/data_entry"
                                 id="page-link"
                             >
@@ -152,39 +157,39 @@ const App = () => {
                                     <Link to="/data_entry_wsr"
                                         id="page-link"
                                     >
-                                        <i class="fas fa-envelope"></i
-                                        ><span>WSR</span>
+                                        <i class="fas fa-envelope"></i>
+                                        <span>WSR</span>
                                     </Link>
                                 </li>
                                 <li class="sidebar-item sidebar-sub-item" id="Highlight" onClick={()=>{setCurrentTab("Data_Entry");setCurrentPage("Skill Tracker");ColorTPName();}}>
                                     <Link to="/data_entry_st"
                                         id="page-link"
                                     >
-                                        <i class="fas fa-rocket"></i
-                                        ><span>Skill Tracker</span>
+                                        <i class="fas fa-rocket"></i>
+                                        <span>Skill Tracker</span>
                                     </Link>
                                 </li>
                                 <li class="sidebar-item sidebar-sub-item" id="Highlight" onClick={()=>{setCurrentTab("Data_Entry");setCurrentPage("Action Items");ColorTPName();}}>
                                     <Link to="/data_entry_ai"
                                         id="page-link"
                                     >
-                                        <i class="fas fa-rocket"></i
-                                        ><span>Action Items</span>
+                                        <i class="fas fa-rocket"></i>
+                                        <span>Action Items</span>
                                     </Link>
                                 </li>
                                 <li class="sidebar-item sidebar-sub-item" id="Highlight" onClick={()=>{setCurrentTab("Data_Entry");setCurrentPage("Leave Tracker");ColorTPName();}}>
                                     <Link to="/data_entry_lt"
                                         id="page-link"
                                     >
-                                        <i class="fas fa-rocket"></i
-                                        ><span>Leave Tracker</span>
+                                        <i class="fas fa-rocket"></i>
+                                        <span>Leave Tracker</span>
                                     </Link>
                                 </li>
                                 </div>
                         </div>
                         <div class="sidebar_section">
                         <div class="sidebar_section_main_header" id="Highlight_Tab">
-                        <li class="sidebar-item sidebar-main-item" style={{width:'85px',height:'95px'}} onClick={()=>{setCurrentTab("Reporting");setCurrentPage("");ColorTPName();}}>
+                        <li class="sidebar-item sidebar-main-item" style={{width:'50px',height:'60px'}} onClick={()=>{setCurrentTab("Reporting");setCurrentPage("");ColorTPName();}}>
                             <Link to="/reporting"
                                 id="page-link"
                             >
@@ -197,33 +202,35 @@ const App = () => {
                             <Link to="/rag_status"
                                 id="page-link"
                             >
-                                <i class="fas fa-database"></i
-                                ><span>RAG Status</span>
+                                <i class="fas fa-database"></i>
+                                <span>RAG Status</span>
                             </Link>
                         </li>
                         <li class="sidebar-item sidebar-sub-item" id="Highlight" onClick={()=>{setCurrentTab("Reporting");setCurrentPage("Interview_Panelists");ColorTPName();}}>
                             <Link to="/interview_panelists"
                                 id="page-link"
                             >
-                                <i class="fas fa-database"></i
-                                ><span>Interview_Panelists</span>
+                                <i class="fas fa-database"></i>
+                                <span>Interview_Panelists</span>
                             </Link>
                         </li>
+                        <span>.</span>
                         </div>
                         </div>
                     <br />
                     <li class="separator"></li>
                     <li class="sidebar-item user-section">
-                        <i class="fas fa-user text-black"></i
-                        ><span class="text-black">@Qstopteam</span>
+                        <i class="fas fa-user text-black"></i>
+                        <span class="text-black">@Qstopteam</span>
                     </li>
                 </ul>
             </nav>
-            <div id="main_content" class="content main_content-expanded flex-1 p-4">
+            <div id="main_content" class="content main_content-expanded flex-1 p-4 w-100">
             <Routes>
              <Route path="/home" element={<Overview/>} />
              <Route path="/about" element={<About_Us/>} />
              <Route path="/accelerators" element={<Accelerator/>} />
+             <Route path="/projects" element={<Projects/>} />
              <Route path="/resources" element={<Resources/>} />
              <Route path="/data_entry" element={<DataEntry/>} />
              <Route path="/data_entry_wsr" element={<DataEntryWSR/>} />
@@ -233,6 +240,7 @@ const App = () => {
              <Route path="/reporting" element={<Reporting/>} />
              <Route path="/rag_status" element={<RAGStatus/>} />
              <Route path="/interview_panelists" element={<InterviewPanelists/>} />
+             <Route path="/governance" element={<Governance/>} />
             </Routes>
             </div>
           </div>

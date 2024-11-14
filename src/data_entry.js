@@ -294,138 +294,138 @@ const DataEntry = () => {
       },[]);
 
     return(
-    <>
-    <div id="page_header">
-        <h1>DataEntry-WSR</h1>
-    </div>
-    <div id="part1" style={{width: '48%', float: 'left', display: 'inline'}}>
-    <div>
-        <div>
-            <h5>Input Form</h5>
+        <>
+        <div id="page_header">
+            <h1>DataEntry-WSR</h1>
         </div>
-        <div id="AppliedFilters">
-        <table>
+        <div id="part1" style={{width: '48%', float: 'left', display: 'inline'}}>
+        <div>
+            <div>
+                <h5>Input Form</h5>
+            </div>
+            <div id="AppliedFilters">
+            <table>
+                <tbody>
+                    <tr class='flex justify-between'><td id="col_label">Practice Lead<span>*</span></td><span>:</span><td class="practice_lead" id="mand_fields"><span>-- Select --</span></td></tr>
+                    <tr class='flex justify-between'><td id="col_label">Resource Name<span>*</span></td><span>:</span><td class="resource_name" id="mand_fields"><span>-- Select --</span></td></tr>
+                    <tr class='flex justify-between'><td id="col_label">Project Name<span>*</span></td><span>:</span><td class="project_name" id="mand_fields"><span>-- Select --</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+        </div>
+        <div>
+            <div id="EntryForm">
+            <table>
             <tbody>
-                <tr><td id="col_label">Practice Lead<span>*</span><td>:</td></td><td class="practice_lead"><span id="mand_fields">-- Select --</span></td></tr>
-                <tr><td id="col_label">Resource Name<span>*</span><td>:</td></td><td class="resource_name"><span id="mand_fields">-- Select --</span></td></tr>
-                <tr><td id="col_label">Project Name<span>*</span><td>:</td></td><td class="project_name"><span id="mand_fields">-- Select --</span></td></tr>
-            </tbody>
-          </table>
-        </div>
-    </div>
-    <div>
-        <div id="EntryForm">
-        <table>
-        <tbody>
-        <tr>
-            <td id="col_label">RAG Status<span>*</span><td>:</td></td>
-            <td>
-                <select class="select_Dropdown_Input" onChange={getRAGStatus} name="RAGStatus" id="RAGStatus">
-                {rags.map((rag, index) => (
-                    <option key={index} value={rag}>
-                      {rag}
-                    </option>
-                  ))}
-                </select>
-            </td>
-        </tr>
-        <tr><td id="rag_alert"></td></tr>
-        <tr>
-            <td id="col_label">Testing Type<span>*</span><td>:</td></td>
-            <td>
-                <select class="select_Dropdown_Input" onChange={getTestingType} name="TestingType" id="TestingType">
-                {test_types.map((test_type, index) => (
-                    <option key={index} value={test_type}>
-                      {test_type}
-                    </option>
-                  ))}
-                </select>
-            </td>
-        </tr>
-        <tr><td id="test_type_alert"></td></tr>
-        <tr>
-            <td id="col_label">Weekly Deliverable<span>*</span><td>:</td></td>
-            <td><textarea class="text_Input" id="WeeklyDeliverable" onChange={getWeeklyDeliverable} placeholder="Enter Weekly Deliverable"></textarea></td>
-        </tr>
-        <tr><td id="weekly_deliverables_alert"></td></tr>
-        <tr>
-            <td id="col_label">Sub-Tasks<td>:</td></td>
-            <td><textarea class="text_Input" id="SubTasks" placeholder="Enter Sub Tasks"></textarea></td>
-        </tr>
-        <tr>
-            <td id="col_label">Impediments<td>:</td></td>
-            <td><textarea class="text_Input" id="Impediments" placeholder="Enter Impediments"></textarea></td>
-        </tr>
-        <tr>
-            <td id="col_label">Action-items<td>:</td></td>
-            <td><textarea class="text_Input" id="ActionItems" placeholder="Enter Action Items"></textarea></td>
-        </tr>
-        <tr>
-            <td id="col_label">Comments<td>:</td></td>
-            <td><textarea class="text_Input" id="Comments" placeholder="Enter Comments"></textarea></td>
-        </tr>
-        <tr>
-            <td id="col_label">Upcoming Leaves<td>:</td></td>
-            <td><input class="text_Input" type="date" id="StartDate" name="From Date" placeholder="From Date" min="2015-01-01" max="2030-12-31" /> to <input class="text_Input" type="date" id="EndDate" name="To Date"  placeholder="From Date" min="2015-01-01" max="2030-12-31" /></td>
-        </tr>
-        </tbody>
-    </table>
-        </div>
-        <button class="default_Button" id="Submit_Button" onClick={sendInput}>
-            Submit
-        </button>
-        <label id="alert"></label>
-    </div>
-</div>
-<div id="part2" style={{width: '48%', float: 'left', display: 'inline'}}>
-    <div>
-        <div>
-            <h5>Apply Filters</h5>
-        </div>
-        <div id="ApplyFilters">
-        <table>
-          <tbody>
-          <tr>
-              <td id="col_label">Practice Lead<td>:</td></td>
-              <td>
-                    <select class="select_Dropdown_Input" onChange={getPracticeLead} name="PracticeLead" id="PracticeLead">
-                      {leads.map((lead, index) => (
-            <option key={index} value={lead}>
-              {lead}
-            </option>
-          ))}
+            <tr class='flex justify-between'>
+                <td id="col_label">RAG Status<span>*</span></td><span>:</span>
+                <td>
+                    <select class="select_Dropdown_Input" onChange={getRAGStatus} name="RAGStatus" id="RAGStatus">
+                    {rags.map((rag, index) => (
+                        <option key={index} value={rag}>
+                          {rag}
+                        </option>
+                      ))}
                     </select>
-              </td>
-          </tr>
-          <tr>
-              <td id="col_label">Resource Name<td>:</td></td>
-              <td>
-                  <select class="select_Dropdown_Input" onChange={getResourceName} name="ResourceName" id="ResourceName">
-                      <option  value="-- Select --">-- Select --</option>
-                  </select>
-              </td>
-          </tr>
-          <tr>
-              <td id="col_label">Project Name<td>:</td></td>
-              <td>
-                  <select class="select_Dropdown_Input" onChange={getProjectName} name="ProjectName" id="ProjectName">
-                  {projects.map((project, index) => (
-                    <option key={index} value={project}>
-                      {project}
-                    </option>
-                  ))}
-                  </select>
-              </td>
-          </tr>
-          </tbody>
-      </table>
+                </td>
+            </tr>
+            <tr><td id="rag_alert"></td></tr>
+            <tr class='flex justify-between'>
+                <td id="col_label">Testing Type<span>*</span></td><span>:</span>
+                <td>
+                    <select class="select_Dropdown_Input" onChange={getTestingType} name="TestingType" id="TestingType">
+                    {test_types.map((test_type, index) => (
+                        <option key={index} value={test_type}>
+                          {test_type}
+                        </option>
+                      ))}
+                    </select>
+                </td>
+            </tr>
+            <tr><td id="test_type_alert"></td></tr>
+            <tr class='flex justify-between'>
+                <td id="col_label">Weekly Deliverable<span>*</span></td><span>:</span>
+                <td><textarea class="text_Input" id="WeeklyDeliverable" onChange={getWeeklyDeliverable} placeholder="Enter Weekly Deliverable"></textarea></td>
+            </tr>
+            <tr><td id="weekly_deliverables_alert"></td></tr>
+            <tr class='flex justify-between'>
+                <td id="col_label">Sub-Tasks</td><span>:</span>
+                <td><textarea class="text_Input" id="SubTasks" placeholder="Enter Sub Tasks"></textarea></td>
+            </tr>
+            <tr class='flex justify-between'>
+                <td id="col_label">Impediments</td><span>:</span>
+                <td><textarea class="text_Input" id="Impediments" placeholder="Enter Impediments"></textarea></td>
+            </tr>
+            <tr class='flex justify-between'>
+                <td id="col_label">Action-items</td><span>:</span>
+                <td><textarea class="text_Input" id="ActionItems" placeholder="Enter Action Items"></textarea></td>
+            </tr>
+            <tr class='flex justify-between'>
+                <td id="col_label">Comments</td><span>:</span>
+                <td><textarea class="text_Input" id="Comments" placeholder="Enter Comments"></textarea></td>
+            </tr>
+            <tr class='flex justify-between'>
+                <td id="col_label">Upcoming Leaves</td><span>:</span>
+                <td><input class="text_Input" type="date" id="StartDate" name="From Date" placeholder="From Date" min="2015-01-01" max="2030-12-31" /> to <input class="text_Input" type="date" id="EndDate" name="To Date"  placeholder="From Date" min="2015-01-01" max="2030-12-31" /></td>
+            </tr>
+            </tbody>
+        </table>
+            </div>
+            <button class="default_Button" id="Submit_Button" onClick={sendInput}>
+                Submit
+            </button>
+            <label id="alert"></label>
         </div>
     </div>
-    <div id="popup">
-        <span class="popuptext" id="myPopup"></span>
+    <div id="part2" style={{width: '48%', float: 'left', display: 'inline'}}>
+        <div>
+            <div>
+                <h5>Apply Filters</h5>
+            </div>
+            <div id="ApplyFilters">
+            <table>
+              <tbody>
+              <tr class='flex justify-between'>
+                  <td id="col_label">Practice Lead</td><span>:</span>
+                  <td>
+                        <select class="select_Dropdown_Input" onChange={getPracticeLead} name="PracticeLead" id="PracticeLead">
+                          {leads.map((lead, index) => (
+                <option key={index} value={lead}>
+                  {lead}
+                </option>
+              ))}
+                        </select>
+                  </td>
+              </tr>
+              <tr class='flex justify-between'>
+                  <td id="col_label">Resource Name</td><span>:</span>
+                  <td>
+                      <select class="select_Dropdown_Input" onChange={getResourceName} name="ResourceName" id="ResourceName">
+                          <option  value="-- Select --">-- Select --</option>
+                      </select>
+                  </td>
+              </tr>
+              <tr class='flex justify-between'>
+                  <td id="col_label">Project Name</td><span>:</span>
+                  <td>
+                      <select class="select_Dropdown_Input" onChange={getProjectName} name="ProjectName" id="ProjectName">
+                      {projects.map((project, index) => (
+                        <option key={index} value={project}>
+                          {project}
+                        </option>
+                      ))}
+                      </select>
+                  </td>
+              </tr>
+              </tbody>
+          </table>
+            </div>
+        </div>
+        <div id="popup">
+            <span class="popuptext" id="myPopup"></span>
+        </div>
     </div>
-</div>
-    </>
+        </>
     );
 };
 

@@ -255,9 +255,9 @@ const Resources = () => {
        <div class="flex gap-4">
         <div id="sub_page_box" class="section_1 w-3/4 overflow-y-auto">
             <div id="sub_page_headers">
-                <h3>Resource Training & Development</h3>
+                <h5>Resource Training & Development</h5>
             </div>
-            <div class="p-2">
+            <div>
                 The Quality Engineering resources are constantly trained in the
                 latest trends and technologies for delivering best-in-class
                 testing services across client projects.
@@ -276,9 +276,9 @@ const Resources = () => {
 
         <div id="sub_page_box" class="section_2 w-1/4 overflow-y-auto">
             <div id="sub_page_headers">
-                <h3>Training Updates</h3>
+                <h5>Training Updates</h5>
             </div>
-            <div class="p-2">
+            <div>
                 <p>
                     Upcoming Trainings on Tosca starting Batch 1 from Apr 2024
                 </p>
@@ -287,9 +287,9 @@ const Resources = () => {
      </div>
 
      <section class="section" id="dropdown">
-        <div class="filters-legend">
+        <div class="filters-legend flex justify-between">
             <div class="filters">
-                <label for="skill" class="required">Skill</label>
+                <label for="skill" class="required fw-bold">Skill :</label>
                 <select id="skill" class="p-2 border border-gray-300 rounded" 
                     onChange={() => {
                         const skillSelect = document.getElementById("skill");
@@ -318,7 +318,7 @@ const Resources = () => {
                 >
             </div>
             <div class="filters">
-                <label for="expertise" class="required">Expertise</label>
+                <label for="expertise" class="required fw-bold">Expertise :</label>
                 <select
                     id="expertise"
                     class="p-2 border border-gray-300 rounded"
@@ -353,7 +353,7 @@ const Resources = () => {
                 >
             </div>
             <div class="filters">
-                <label for="baseLocation" class="required">Base Location</label>
+                <label for="baseLocation" class="required fw-bold">Base Location :</label>
                 <select
                     id="baseLocation"
                     class="p-2 border border-gray-300 rounded"
@@ -364,10 +364,10 @@ const Resources = () => {
                     <option value="Hyderabad">Hyderabad</option>
                     <option value="Bengaluru">Bengaluru</option>
                 </select>
-            </div>=
+            </div>
             <button
                 id="resetBtn"
-                class="p-2 border border-gray-300 rounded bg-gray-800"
+                class="p-2 border border-gray-300 rounded bg-gray-400"
                 onClick={() => {
                     const resetBtn = document.getElementById("resetBtn");
                     const skillSelect = document.getElementById("skill");
@@ -384,7 +384,7 @@ const Resources = () => {
                 Reset Filters
             </button>
         </div>
-        <table id="employeeList">
+        <table id="employeeList" >
             <thead>
                 <tr>
                     <th>Resources</th>

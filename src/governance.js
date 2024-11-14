@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 
+// Register the necessary components
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 const Governance = () => {
+    const [res, setres] = useState(<h4>
+        Choose the client to list the Projects
+    </h4>);
+const [sdata, setsdata] = useState();
+const [sopt, setsopt] = useState();
 
 
     var projectsData = {
@@ -77,8 +86,8 @@ const Governance = () => {
                 display: false, // Hide legend for simplicity
             },
             title: {
-                display: true,
-                text: "RESOURCE SPREAD", // Chart title
+                display: true//,
+                //text: "RESOURCE SPREAD", // Chart title
             },
         },
         scales: {
@@ -88,17 +97,6 @@ const Governance = () => {
         },
     };
 
-    // Get the canvas element for Resource Spread Sheet
-    var ctxSpread = document
-        .getElementById("spreadChart")
-        .getContext("2d");
-
-    // Create the chart for Resource Spread Sheet
-    //var spreadChart = new Chart(ctxSpread, {
-    //    type: "bar",
-    //    data: projectsData,
-    //    options: chartOptions,
-    //});
 
 const projectData = {
     Q1: {
@@ -139,10 +137,11 @@ const projectData = {
     },
 };
 
-const ctx = document.getElementById("barChart").getContext("sd");
+//const ctx = document.getElementById("barChart").getContext("sd");
 let barChart;
 
 function createChart(quarter) {
+    //const quarter = document.getElementById("quarterSelect").value;
     const months = projectData[quarter].months;
     const datasets = projectData[quarter].data.map(
         (project, index) => ({
@@ -151,47 +150,47 @@ function createChart(quarter) {
             backgroundColor: `hsl(120, 100%, ${30 + index * 10}%)`,
         }),
     );
+    console.log("MONTHS",months);
+    console.log("DATASETS",datasets);
 
     if (barChart) {
         barChart.destroy();
     }
+    setsdata({
+        labels: months,
+        datasets: datasets,
+    });
+    setsopt({
+        scales: {
+            x: {
+                min: 0,
+                max: 100,
+                title: {
+                    display: true,
+                    text: "",
+                },
+            },
+            y: {
+                title: {
+                    display: true,
+                    text: "Resources",
+                },
+            },
+        },
+        responsive: true,
+        plugins: {
+            legend: {
+                display: false,
+                position: "top",
+            },
+            tooltip: {
+                mode: "index",
+                intersect: false,
+            },
+        },
+    });
 
-    /*barChart = new Chart(ctx, {
-        type: "bar",
-        data: {
-            labels: months,
-            datasets: datasets,
-        },
-        options: {
-            scales: {
-                x: {
-                    min: 0,
-                    max: 100,
-                    title: {
-                        display: true,
-                        text: "",
-                    },
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: "Resources",
-                    },
-                },
-            },
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: false,
-                    position: "top",
-                },
-                tooltip: {
-                    mode: "index",
-                    intersect: false,
-                },
-            },
-        },
-    });*/
+    
 }
 
 function updateChart() {
@@ -199,10 +198,6 @@ function updateChart() {
     createChart(quarter);
 }
 
-// Initialize chart with Q1 data
-window.onload = function () {
-    createChart("Q1");
-};
 
 const data = {
     Link1: [
@@ -508,28 +503,28 @@ const data = {
     ],
 };
 
-const selectElement = document.getElementById("accelerators");
+
+function change_projects(event) {
+    const selectElement = document.getElementById("accelerators");
 const resultsContainer = document.getElementById("results");
 const totalProjectsElement = document.getElementById("totalProjects");
 const totalResourcesElement = document.getElementById("totalResources");
-
-selectElement.addEventListener("change", (event) => {
     const selectedValue = event.target.value;
     const projects = data[selectedValue];
 
     if (projects) {
         const html = projects
             .map(
-                (project) => `
+                (project) => 
                   <div class="project-item">
-                      <div class="project-name">${project.Accelerator}</div>
-                      <div class="resource-count">${project.NEW}</div>
+                      <div class="project-name">{project.Accelerator}</div>
+                      <div class="resource-count">{project.NEW}</div>
                   </div>
-              `,
-            )
-            .join("");
+              
+            );
 
-        resultsContainer.innerHTML = html;
+        //resultsContainer.innerHTML = <>{html}</>;
+        setres(html);
 
         // Calculate total number of projects
         const totalProjects = projects.reduce(
@@ -542,139 +537,64 @@ selectElement.addEventListener("change", (event) => {
         const totalResources = projects.length;
         totalResourcesElement.textContent = totalResources;
     }
-});
 
+}
+
+useEffect(() => {
+    createChart("Q1");
+  },[]);
 
 
     return(
 <>
-    <div class="w-100">
+<div id="page_header">
+  <h1>Governance</h1>
+</div>
+<div class="flex flex-row gap-2 p-2">
+<div id="sub_page_box" class="gap-4 w-1/2">
         <div>
-            <h3 id="sub_page_headers">Client Partners</h3>
+            <h5 id="sub_page_headers">Client Partners</h5>
         </div>
-        <div
-            class="p-3 bg-white bg-info bg-opacity-10 border border-start-0 rounded-end"
-        >
-            <div>
+        <div>
+            <p>
                 The Quality engineering services are rendered to 16 customers
                 that includes 68 resources on the various projects of the client
                 partners.
-            </div>
+            </p>
         </div>
     </div>
 
-    <div id="sub_page_box">
+    <div id="sub_page_box" class="gap-4 w-1/2"> 
         <div>
-            <h3 id="sub_page_headers">Governance - Council Updates</h3>
+            <h5 id="sub_page_headers">Governance - Council Updates</h5>
         </div>
-        <div class="bg-white border border-solid border-slate-400 p-1">
+        <div>
             <p> The practice hits client partner count to 17.</p>
             <p> The bench resources head count is always kept under 10.</p>
         </div>
     </div>
+</div>
 
-    <div class="container-fluid">
-        <div class="flex gap-1 p-2">
-            <div class="col-lg-8">
-                <div class="col-lg-10 d-flex align-items-center justify-center">
-                    <div
-                        id="spreadChartContainer"
-                        style="width: 400%; height: 450px"
-                    >
-                        <canvas
-                            id="spreadChart"
-                            style="width: 100%; height: 100%"
-                        ></canvas>
-                    </div>
-                  <thead>
-                    <tr>
-                      <th class="bg-orange-200 p-1">Client Name</th>
-                      <th class="bg-orange-200 p-1">Resources</th>
+    <div>
+        <div class="flex flex-row gap-2 p-2">
 
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>Accuray</td>
-                      <td style="text-align: center;">1</td>
-                  </tr>
-                  <tr>
-                      <td>Arch Capital</td>
-                      <td style="text-align: center;">1</td>
-                  </tr>
-                  <tr>
-                      <td>Carrier</td>
-                      <td style="text-align: center;">2</td>
-                  </tr>
-                  <tr>
-                      <td>Mars</td>
-                      <td style="text-align: center;">5</td>
-                  </tr>
-                  <tr>
-                      <td>Mcdonalds</td>
-                      <td style="text-align: center;">3</td>
-                  </tr>
-                  <tr>
-                      <td>Merck</td>
-                      <td style="text-align: center;">4</td>
-                  </tr>
-                  <tr>
-                      <td>Nationwide</td>
-                      <td style="text-align: center;">3</td>
-                  </tr>
-                  <tr>
-                      <td>Northen Trust</td>
-                      <td style="text-align: center;">1</td>
-                  </tr>
-                  <tr>
-                      <td>Pepsico</td>
-                      <td style="text-align: center;">22</td>
-                  </tr>
-                  <tr>
-                      <td>Polen</td>
-                      <td style="text-align: center;">2</td>
-                  </tr>
-                  <tr>
-                      <td>Practice - Bench</td>
-                      <td style="text-align: center;">8</td>
-                  </tr>
-                  <tr>
-                      <td>Prologis</td>
-                      <td style="text-align: center;">5</td>
-                  </tr>
-                  <tr>
-                      <td>Ptp</td>
-                      <td style="text-align: center;">1</td>
-                  </tr>
-                  <tr>
-                      <td>Quantum Energy Partners</td>
-                      <td style="text-align: center;">2</td>
-                  </tr>
-                  <tr>
-                      <td>T-Mobile</td>
-                      <td style="text-align: center;">5</td>
-                  </tr>
-                  <tr>
-                      <td>Tata Steel</td>
-                      <td style="text-align: center;">2</td>
-                  </tr>
-                  </tbody>
+            <div id='sub_page_box' class="gap-4 w-1/2">
+              <h5>Project Resource Spread </h5>
+                <div>
+                <Bar data={projectsData} options={chartOptions} style={{width:'500px'}} />
                 </div>
-              <canvas id="myChart"></canvas>
             </div>
 
-            <div class="container mt-9">
-                <div class="bg-white-200 p-3 rounded-lg mb-3">
+                <div id='sub_page_box' class="gap-4 w-1/2">
                     <div
-                        class="bg-orange-200 p-6 rounded-lg flex justify-between items-center mb-3"
-                    >
-                        <h2 class="text-lg font-bold text-black-800">
-                            Choose the Client
-                        </h2>
+                        class="flex justify-between items-center p-1"
+                     >
+                        <h6 id="col_label" class='flex justify-between'><span class="text-start" style={{width:'200px'}}>Client</span><span class="text-end" style={{width:'27px'}}>:</span></h6>
                         <select
                             id="accelerators"
                             name="accelerators"
                             class="p-2 border border-gray-300 rounded"
+                            onChange={change_projects}
                         >
                             <option value="">--Select--</option>
                             <option value="All">All</option>
@@ -699,146 +619,66 @@ selectElement.addEventListener("change", (event) => {
                         </select>
                     </div>
                     <div class="total-box">
-                        <div class="bg-orange-200 p-2 rounded-lg mb-2">
-                            <h6>
-                                Total Number of Projects:
-                                <span id="totalResources">0</span>
+                            <h6 class='flex justify-between p-1'>
+                                <span class="text-start" style={{width:'200px'}}>Total Number of Projects  </span>
+                                <span>:</span>
+                                <span class="text-center" id="totalResources" style={{width:'250px'}}>0</span>
                             </h6>
-                        </div>
-                        <div class="bg-orange-200 p-2 rounded-lg">
-                            <h6>
-                                Total Number of Resources:
-                                <span id="totalProjects">0</span>
+                            <h6 class='flex justify-between p-1'>
+                                <span style={{width:'200px'}}>Total Number of Resources</span>
+                                <span>:</span>
+                                <span class="text-center" id="totalProjects" style={{width:'250px'}}>0</span>
                             </h6>
-                        </div>
                     </div>
                     <div class="flex mb-3">
                         <div
-                            class="w-full border border-solid border-slate-400 p-1"
+                            class="w-full"
                         >
-                            <div class="table-header">
-                                <div class="header-item bg-orange-200">
-                                    Projects
-                                </div>
-                                <div class="header-item bg-orange-200">
-                                    Resources
-                                </div>
-                            </div>
-                            <div id="results" class="mt-1 scrollable-container">
-                                <div class="text-center text-gray-500">
-                                    <h4>
-                                        Choose the client to list the Projects
-                                    </h4>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="container mt-9">
-                <div class="bg-white-200 p-3 rounded-lg mb-3">=
-                    <div
-                        id="sub_page_box"
-                        class="bg-orange-200 p-6 rounded-lg flex justify-between items-center mb-3"
-                    >
-                        <h5>Choose the Client</h5>
-                        <select
-                            id="accelerators"
-                            name="accelerators"
-                            class="p-2 border border-gray-300 rounded"
-                        >
-                            <option value="">--Select--</option>
-                            <option value="All">All</option>
-                            <option value="Link1">Accuray</option>
-                            <option value="Link2">Arch Capital</option>
-                            <option value="Link3">Carrier</option>
-                            <option value="Link4">Mars</option>
-                            <option value="Link5">Mcdonalds</option>
-                            <option value="Link6">Merck</option>
-                            <option value="Link7">Nationwide</option>
-                            <option value="Link8">Northen Trust</option>
-                            <option value="Link9">Pepsico</option>
-                            <option value="Link10">Polen</option>
-                            <option value="Link11">Practice - Bench</option>
-                            <option value="Link12">Prologis</option>
-                            <option value="Link13">Ptp</option>
-                            <option value="Link14">
-                                Quantum Energy Partners
-                            </option>
-                            <option value="Link15">T-Mobile</option>
-                            <option value="Link16">Tata Steel</option>
-                        </select>
-                    </div>
-                    <div class="total-box">
-                        <div
-                            id="sub_page_headers"
-                            class="bg-orange-200 p-2 rounded-lg mb-2"
-                        >
-                            <h6>
-                                Total Number of Projects:
-                                <span id="totalResources">0</span>
-                            </h6>
-                        </div>
-                        <div
-                            id="sub_page_headers"
-                            class="bg-orange-200 p-2 rounded-lg"
-                        >
-                            <h6>
-                                Total Number of Resources:
-                                <span id="totalProjects">0</span>
-                            </h6>
-                        </div>
-                    </div>
-                    <div class="flex mb-3">
-                        <div
-                            class="w-full border border-solid border-slate-400 p-1"
-                        >
-                            <div class="table-header">
+                            <div class="table-header rounded-top">
                                 <div
                                     id="sub_page_headers"
-                                    class="header-item bg-orange-200"
+                                    class="header-item"
                                 >
                                     Projects
                                 </div>
                                 <div
                                     id="sub_page_headers"
-                                    class="header-item bg-orange-200"
+                                    class="header-item"
                                 >
                                     Resources
                                 </div>
                             </div>
-                            <div id="results" class="mt-1 scrollable-container">
+                            <div id="results" class="scrollable-container">
                                 <div class="text-center text-gray-500">
-                                    <h4>
-                                        Choose the client to list the Projects
-                                    </h4>
+                                    {res}
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
         </div>
     </div>
-    <div class="row mt-4">
-        <div class="container">
-            <h3>Resource Release Trend for the Year 2024</h3>
-            <label for="quarterSelect">Select Quarter:</label>
-            <select id="quarterSelect" onchange="updateChart()">
-                <option value="Q1">Q1</option>
+    <div class="row flex justify-between items-center" id='sub_page_box'>
+        <div class="container" >
+            <h5>Resource Release Trend for the Year 2024</h5>
+            <h6 id="col_label" style={{width:'300px'}} class='flex justify-between'><span class="text-start" style={{width:'50px'}}>Quarter</span><span class="text-center" style={{width:'27px'}}>:</span>
+            <select id="quarterSelect" onChange={updateChart}
+            class="p-2 border border-gray-300 rounded"
+            >
+                <option value="Q1" selected>Q1</option>
                 <option value="Q2">Q2</option>
                 <option value="Q3">Q3</option>
                 <option value="Q4">Q4</option>
             </select>
+            </h6>
             <div
                 id="chartContainer"
                 class="d-flex"
-                style="width: 100%; height: 400px"
+                style={{width: '100%', height: '400px'}}
             >
-                <canvas
-                    id="barChart"
-                    style="width: 1000px; height: 80%"
-                ></canvas>
+                
+                    {sdata&&sopt&&<Bar data={sdata} options={sopt} />}
+
             </div>
         </div>
     </div>

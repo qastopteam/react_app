@@ -23,7 +23,18 @@ const DEActionItems = () => {
         }
     }
     function getAreaofSupport() {
-        let aos = document.getElementById("AreaofSupport").value
+        let selectElement =document.getElementById("ChooseTracker");
+        let Tracker =
+            selectElement.options
+            [selectElement.selectedIndex].textContent;
+        let aos = "Request";
+        if (Tracker=="Action Items for Practice - Request")
+        {
+            aos = "Request";
+        }
+        else{
+            aos = "Feedback";
+        }
         setcurrentSelectedTracker(aos);
     }
     function getClientName() {
@@ -54,8 +65,8 @@ const DEActionItems = () => {
         document.getElementById('requestor_name_alert').textContent = "";
         }
     }
-    function getRequestDescription() {
-        let request_description = document.getElementById("RequestDescription").value
+    function getRequesspanescription() {
+        let request_description = document.getElementById("Requesspanescription").value
         if(request_description==""){
         document.getElementById('request_description_alert').textContent = "*Please Enter Request Description";
         }
@@ -113,8 +124,15 @@ const DEActionItems = () => {
             selectElement.options
             [selectElement.selectedIndex].textContent;
         if (Tracker=="Action Items for Practice - Request" || Tracker=="Action Items for Practice - Feedback"){
-         selectElement =document.getElementById("AreaofSupport");
-         let area_of_support =selectElement.options[selectElement.selectedIndex].textContent;
+         //selectElement =document.getElementById("AreaofSupport");
+         let area_of_support ="Request"
+         if (Tracker=="Action Items for Practice - Request")
+        {
+            area_of_support = "Request";
+        }
+        else{
+            area_of_support = "Feedback";
+        }
          let flag=true;
          if(area_of_support=="Request"){
          selectElement =document.getElementById("ChooseRequestType");
@@ -124,7 +142,7 @@ const DEActionItems = () => {
          selectElement =document.getElementById("QEDeliveryLead");
          let qe_delivery_lead =selectElement.options[selectElement.selectedIndex].textContent;
          let requestor_name = document.getElementById("RequestorName").value
-         let request_description = document.getElementById("RequestDescription").value
+         let request_description = document.getElementById("Requesspanescription").value
          if(request_type=="--Select--"){
           flag=false;
           document.getElementById('request_type_alert').textContent = "*Please Select Request Type";
@@ -218,99 +236,93 @@ const DEActionItems = () => {
     return(
         <>
         <div id="page_header">
-        <h1>DataEntry</h1>
+        <h1>Action Items</h1>
         </div>
-        <div id="part1" style={{width: '48%', float: 'left', display: 'inline'}}>
-    <div>
-        <div>
-            <h5>Input Form</h5>
-        </div>
-        <div id="AppliedFilters">
-            {currentTracker=="Action Items for Practice - Request"&&
-            <table>
-            <tbody>
-                <tr><td id="col_label">Area of Support<span>*</span><td>:</td></td><td  class="area_of_support"><span id="mand_fields">Request</span></td></tr>
-            </tbody>
-          </table>
-            }
-            {currentTracker=="Action Items for Practice - Feedback"&&
-            <table>
-            <tbody>
-                <tr><td id="col_label">Area of Support<span>*</span><td>:</td></td><td  class="area_of_support"><span id="mand_fields">Feedback</span></td></tr>
-            </tbody>
-          </table>
-            }
-        </div>
-    </div>
-    <div>
+    <div id="part1">
         <div id="EntryForm">
+        <div class='filters'>
+            <label id="col_label" class='flex justify-between'><span class="text-start">Choose Tracker</span><span class="text-start">:</span></label>
+            <span id="ChoosedTracker">
+                <select
+                    onChange={getChooseTracker}
+                    name="ChooseTracker"
+                    id="ChooseTracker"
+                    class="select_Dropdown_Input"
+                    style={{width:'350px'}}
+                >
+                    {trackers.map((tracker, index) => (
+                        <option key={index} value={tracker}>
+                        {tracker}
+                        </option>
+                    ))}
+                </select>
+            </span>
+            </div>
+            <hr/>
             {currentTracker=="Action Items for Practice - Request"&&
-            <table>
-            <tbody>
-            <tr>
-                <td id="col_label">Requestor Name<span>*</span><td>:</td></td>
-                <td>
-                    <input class="text_Input" onChange={getRequestorName} type="text" id="RequestorName" name="RequestorName" placeholder="Enter Requestor Name"/>
-                </td>
-            </tr>
-            <tr><td id="requestor_name_alert"></td></tr>
-            <tr>
-                <td id="col_label">Client Name<span>*</span><td>:</td></td>
-                <td id="clnt" >
-                    <select class="select_Dropdown_Input" onChange={getClientName} name="ClientName" id="ClientName">
+            <div>
+            <div class='filters'>
+                <label id="col_label" class='flex justify-between'><span class="text-start">Requestor Name*</span><span class="text-start">:</span></label>
+                <span>
+                    <input style={{width:'350px'}} class="text_Input" onChange={getRequestorName} type="text" id="RequestorName" name="RequestorName" placeholder="Enter Requestor Name"/>
+                </span>
+            </div>
+            <div><span id="requestor_name_alert"></span></div>
+            <div class='filters'>
+                <label id="col_label" class='flex justify-between'><span class="text-start">Client Name*</span><span class="text-start">:</span></label>
+                <span id="clnt" >
+                    <select style={{width:'350px'}} class="select_Dropdown_Input" onChange={getClientName} name="ClientName" id="ClientName">
                     {client_names.map((client_name, index) => (
                     <option key={index} value={client_name}>
                       {client_name}
                     </option>
                   ))}
                     </select>
-                </td>
-            </tr>
-            <tr><td id="client_name_alert"></td></tr>
-            <tr>
-                <td id="col_label">QE Delivery Lead<span>*</span><td>:</td></td>
-                <td>
-                    <select class="select_Dropdown_Input" onChange={getQEDeliveryLead} name="QEDeliveryLead" id="QEDeliveryLead">
+                </span>
+            </div>
+            <div><span id="client_name_alert"></span></div>
+            <div class='filters'>
+                <label id="col_label" class='flex justify-between'><span class="text-start">QE Delivery Lead*</span><span class="text-start">:</span></label>
+                <span>
+                    <select style={{width:'350px'}} class="select_Dropdown_Input" onChange={getQEDeliveryLead} name="QEDeliveryLead" id="QEDeliveryLead">
                     {leads.map((lead, index) => (
                     <option key={index} value={lead}>
                       {lead}
                     </option>
                   ))}
                     </select>
-                </td>
-            </tr>
-            <tr><td id="qe_delivery_lead_alert"></td></tr>
-            <tr>
-                <td id="col_label">Choose Request Type<span>*</span><td>:</td></td>
-                <td>
-                    <select class="select_Dropdown_Input" onChange={getChooseRequestType} name="ChooseRequestType" id="ChooseRequestType">
+                </span>
+            </div>
+            <div><span id="qe_delivery_lead_alert"></span></div>
+            <div class='filters'>
+                <label id="col_label" class='flex justify-between'><span class="text-start">Choose Request Type*</span><span class="text-start">:</span></label>
+                <span>
+                    <select style={{width:'350px'}} class="select_Dropdown_Input" onChange={getChooseRequestType} name="ChooseRequestType" id="ChooseRequestType">
                     {request_types.map((request_type, index) => (
                     <option key={index} value={request_type}>
                       {request_type}
                     </option>
                   ))}
                     </select>
-                </td>
-            </tr>
-            <tr><td id="request_type_alert"></td></tr>
-            <tr>
-                <td id="col_label">Request Description<span>*</span><td>:</td></td>
-                <td><textarea class="text_Input" id="RequestDescription" onChange={getRequestDescription} placeholder="Enter Request Description"></textarea></td>
-            </tr>
-            <tr><td id="request_description_alert"></td></tr>
-            </tbody>
-        </table>
+                </span>
+            </div>
+            <div><span id="request_type_alert"></span></div>
+            <div class='filters'>
+                <label id="col_label" class='flex justify-between'><span class="text-start">Request Description*</span><span class="text-start">:</span></label>
+                <span><textarea class="text_Input" id="Requesspanescription" onChange={getRequesspanescription} placeholder="Enter Request Description"></textarea></span>
+            </div>
+            <div><span id="request_description_alert"></span></div>
+            </div>
             }
-            {currentTracker=="Action Items for Practice - Feedback"&&<table>
-        <tbody>
-        <tr>
-            <td id="col_label">Areas to Improve<span>*</span><td>:</td></td>
-            <td><textarea class="text_Input" id="AreastoImprove" onChange={getAreastoImprove} placeholder="Enter Areas to Improve"></textarea></td>
-        </tr>
-        <tr><td id="areas_to_improve_alert"></td></tr>
-        <tr>
-            <td id="col_label">Rate us on Request provided<td>:</td></td>
-            <td>  <div class="rate">
+            {currentTracker=="Action Items for Practice - Feedback"&&<div>
+        <div class='filters'>
+            <label id="col_label" class='flex justify-between'><span class="text-start">Areas to Improve*</span><span class="text-start">:</span></label>
+            <span><textarea class="text_Input" id="AreastoImprove" onChange={getAreastoImprove} placeholder="Enter Areas to Improve"></textarea></span>
+        </div>
+        <div><span id="areas_to_improve_alert"></span></div>
+        <div class='filters'>
+            <label id="col_label" class='flex justify-between'><span class="text-start">Rate us on Request provided</span><span class="text-start">:</span></label>
+            <span>  <div class="rate">
                     <input onclick="sendInput(5)" type="radio" id="star5" name="rate" value="5" />
                     <label for="star5" title="text">5 stars</label>
                     <input type="radio" id="star4" name="rate" value="4" />
@@ -322,11 +334,11 @@ const DEActionItems = () => {
                     <input type="radio" id="star1" name="rate" value="1" />
                     <label for="star1" title="text">1 star</label>
                   </div>
-            </td>
-        </tr>
-        <tr>
-            <td id="col_label">Rate us on L&D provided<td>:</td></td>
-            <td>  <div class="rate1">
+            </span>
+        </div>
+        <div class='filters'>
+            <label id="col_label" class='flex justify-between'><span class="text-start">Rate us on L&D provided</span><span class="text-start">:</span></label>
+            <span>  <div class="rate1">
                     <input type="radio" id="star51" name="rate1" value="5" />
                     <label for="star51" title="text">5 stars</label>
                     <input type="radio" id="star41" name="rate1" value="4" />
@@ -338,84 +350,18 @@ const DEActionItems = () => {
                     <input type="radio" id="star11" name="rate1" value="1" />
                     <label for="star11" title="text">1 star</label>
                   </div>
-            </td>
-        </tr>
-        </tbody>
-    </table>}
+            </span>
         </div>
-        <button class="default_Button" id="Submit_Button" onClick={sendInput}>
+        </div>}
+    <button class="default_Button" id="Submit_Button" onClick={sendInput}>
             Submit
         </button>
         <label id="alert"></label>
-    </div>
-</div>
-<div id="part2" style={{width: '48%', float: 'left', display: 'inline'}}>
-    <div>
-        <div>
-            <h5>Choose Tracker:</h5>
         </div>
-        <div id="ChoosedTracker">
-            <select
-                onChange={getChooseTracker}
-                name="ChooseTracker"
-                id="ChooseTracker"
-                class="select_Dropdown_Input"
-            >
-                {trackers.map((tracker, index) => (
-                    <option key={index} value={tracker}>
-                      {tracker}
-                    </option>
-                  ))}
-            </select>
-        </div>
-    </div>
-    <div>
-        <div>
-            <h5>Apply Filters</h5>
-        </div>
-        <div id="ApplyFilters">
-        {currentTracker=="Action Items for Practice - Request"&&
-        <table>
-        <tbody>
-        <tr>
-            <td id="col_label">Area of Support<td>:</td></td>
-            <td>
-                <select class="select_Dropdown_Input" onChange={getAreaofSupport} name="AreaofSupport" id="AreaofSupport">
-                  {area_of_supports_Request.map((area_of_supports_R, index) => (
-                    <option key={index} value={area_of_supports_R}>
-                      {area_of_supports_R}
-                    </option>
-                  ))}
-                </select>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-        }
-        {currentTracker=="Action Items for Practice - Feedback"&&
-        <table>
-        <tbody>
-        <tr>
-            <td id="col_label">Area of Support<td>:</td></td>
-            <td>
-                <select class="select_Dropdown_Input" onChange={getAreaofSupport} name="AreaofSupport" id="AreaofSupport">
-                  {area_of_supports_Feedback.map((area_of_supports_FB, index) => (
-                    <option key={index} value={area_of_supports_FB}>
-                      {area_of_supports_FB}
-                    </option>
-                  ))}
-                </select>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-        }
-        </div>
-    </div>
-    <div id="popup">
+        <div id="popup">
         <span class="popuptext" id="myPopup"></span>
     </div>
-</div>
+    </div>
         </>
     )
 };

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-const DESkillTracker = () => {
+const DESkilldivacker = () => {
     const expertice_levels = [
         '--Select--', 'None', 'Interested', 'Beginner', 'Intermediate/Advanced'
     ]
@@ -15,27 +15,19 @@ const DESkillTracker = () => {
     ]
     const up_skillings = ['-- Select --', 'Yes', 'No']
 
-    function getDynamicFilter3() {
+    function getdynamicFilter3() {
         let output = document.getElementById("DynamicFilter3").value
-        document.querySelector('.dynamic_filter_3').textContent = output;
+        //document.querySelector('.dynamic_filter_3').textContent = output;
     }
-    function getDynamicFilter4() {
+    function getdynamicFilter4() {
         let selectElement =document.getElementById("DynamicFilter4");
         let skill =
             selectElement.options
             [selectElement.selectedIndex].textContent;
         if(skill=="Other"){
-        document.getElementById("skl").innerHTML =`<input onchange="getDynamicFilter4()" type="text" id="DynamicFilter4" name="DynamicFilter4"  placeholder="Enter Skill">`;
+        document.getElementById("skl").innerHTML ='<input type="text" id="DynamicFilter4" name="DynamicFilter4"  placeholder="Enter Skill">';
         }
-/*            else{
-        tbl=`<select onchange="getDynamicFilter4()" name="DynamicFilter4" id="DynamicFilter4">
-                    {% for skill in skills %}
-                    <option  value={{skill}}>{{skill}}</option>
-                    {% endfor %}
-                  </select>`;
-        document.getElementById("skl").innerHTML =tbl;
-        }*/
-        document.querySelector('.dynamic_filter_4').textContent = skill;
+        //document.querySelector('.dynamic_filter_4').textContent = skill;
     }
     function getExpertiseLevel() {
         let output = document.getElementById("ExpertiseLevel").value
@@ -53,9 +45,9 @@ const DESkillTracker = () => {
         }, 5000);
         //$('#GFG').text("Div hides after 1 second.");
     }
-    function PopupFunction(Tracker) {
+    function PopupFunction(divacker) {
       var popup = document.getElementById("myPopup");
-      popup.textContent = `${Tracker} Form Submitted Successfully`;
+      popup.textContent = `${divacker} Form Submitted Successfully`;
         popup.classList.add('custom-background');
       //popup.classList.toggle("show");
       setTimeout(function () {
@@ -64,11 +56,11 @@ const DESkillTracker = () => {
         }, 5000);
     }
     function sendInput() {
-        let Tracker ="Skill Tracker"
+        let divacker ="Skill divacker"
          let selectElement =document.getElementById("DynamicFilter3");
          let emp_id =selectElement.options[selectElement.selectedIndex].textContent;
          selectElement =document.getElementById("DynamicFilter4");
-         let skill =selectElement.options[selectElement.selectedIndex].textContent;
+         let skill =selectElement.value;
          selectElement =document.getElementById("ExpertiseLevel");
          let expertise_level =selectElement.options[selectElement.selectedIndex].textContent;
          selectElement =document.getElementById("IntUpSkill");
@@ -87,7 +79,7 @@ const DESkillTracker = () => {
          if(flag){
           /*fetch("https://37727f4f-9aca-4f3e-a138-f54e7c36574d-00-27qjdf76eegx8.sisko.replit.dev/gip", {
           method: "POST",
-          body: JSON.stringify({
+          body: JSON.sdivingify({
           "Employee_ID":emp_id,
           "Skill":skill,
           "Expertise_Level":expertise_level,
@@ -100,9 +92,9 @@ const DESkillTracker = () => {
           .then((response) => response.json())
           .then((json) => console.log(json));*/
 
-          PopupFunction(Tracker);
-             //selectElement.value=Tracker;
-              // getChooseTracker();
+          PopupFunction(divacker);
+             //selectElement.value=divacker;
+              // getChoosedivacker();
          }
          else{
          AlertFunc();
@@ -114,29 +106,38 @@ const DESkillTracker = () => {
     return(
         <>
         <div id="page_header">
-            <h1>DataEntry</h1>
+            <h1>Skill Tracker</h1>
         </div>
-        <div id="part1" style={{width: '48%', float: 'left', display: 'inline'}}>
-    <div>
-        <div>
-            <h5>Input Form</h5>
-        </div>
-        <div id="AppliedFilters">
-        <table>
-            <tbody>
-                <tr><td id="col_label">Employee ID<span>*</span><td>:</td></td><td class="dynamic_filter_3"><span id="mand_fields">-- Select --</span></td></tr>
-                <tr><td id="col_label">Skills<span>*</span><td>:</td></td><td class="dynamic_filter_4"><span id="mand_fields">-- Select --</span></td></tr>
-            </tbody>
-          </table>
-        </div>
-    </div>
+        <div id="part1">
     <div>
         <div id="EntryForm">
-        <table>
-        <tbody>
-        <tr>
-            <td id="col_label">Expertise Level<span>*</span><td>:</td></td>
-            <td>
+        <div class='filters'>
+              <label id="col_label" class='flex justify-between'><span class="text-start">Employee ID*</span><span class="text-start">:</span></label>
+              <span>
+                  <select class="select_Dropdown_Input" onChange={getdynamicFilter3} name="DynamicFilter3" id="DynamicFilter3">
+                {emp_ids.map((emp_id, index) => (
+                    <option key={index} value={emp_id}>
+                      {emp_id}
+                    </option>
+                  ))}
+                  </select>
+              </span>
+          </div>
+           <div class='filters'>
+              <label id="col_label" class='flex justify-between'><span class="text-start">Skills*</span><span class="text-start">:</span></label>
+              <span id="skl">
+                  <select class="select_Dropdown_Input" onChange={getdynamicFilter4} name="DynamicFilter4" id="DynamicFilter4">
+                    {skills.map((skill, index) => (
+                    <option key={index} value={skill}>
+                      {skill}
+                    </option>
+                  ))}
+                  </select>
+              </span>
+          </div>
+        <div class='filters'>
+            <label id="col_label" class='flex justify-between'><span class="text-start">Expertise Level*</span><span class="text-start">:</span></label>
+            <span>
                 <select class="select_Dropdown_Input" onChange={getExpertiseLevel} name="ExpertiseLevel" id="ExpertiseLevel">
                 {expertice_levels.map((expertice_level, index) => (
                     <option key={index} value={expertice_level}>
@@ -144,12 +145,12 @@ const DESkillTracker = () => {
                     </option>
                   ))}
                 </select>
-            </td>
-        </tr>
-        <tr><td id="expertise_level_alert"></td></tr>
-        <tr>
-            <td id="col_label">Interest for Up-Skilling<td>:</td></td>
-            <td>
+            </span>
+        </div>
+        <div><div id="expertise_level_alert"></div></div>
+        <div class='filters'>
+            <label id="col_label" class='flex justify-between'><span class="text-start">Interest for Up-Skilling</span><span class="text-start">:</span></label>
+            <span>
                 <select class="select_Dropdown_Input" onChange={getIntUpSkill} name="IntUpSkill" id="IntUpSkill">
                 {up_skillings.map((up_skilling, index) => (
                     <option key={index} value={up_skilling}>
@@ -157,52 +158,12 @@ const DESkillTracker = () => {
                     </option>
                   ))}
                 </select>
-            </td>
-        </tr>
-        <tr><td></td></tr>
-        </tbody>
-    </table>
+            </span>
         </div>
         <button class="default_Button" id="Submit_Button" onClick={sendInput}>
             Submit
         </button>
         <label id="alert"></label>
-    </div>
-</div>
-<div id="part2" style={{width: '48%', float: 'left', display: 'inline'}}>
-    <div>
-        <div>
-            <h5>Apply Filters</h5>
-        </div>
-        <div id="ApplyFilters">
-        <table>
-          <tbody>
-          <tr>
-              <td id="col_label">Employee ID<td>:</td></td>
-              <td>
-                  <select class="select_Dropdown_Input" onChange={getDynamicFilter3} name="DynamicFilter3" id="DynamicFilter3">
-                {emp_ids.map((emp_id, index) => (
-                    <option key={index} value={emp_id}>
-                      {emp_id}
-                    </option>
-                  ))}
-                  </select>
-              </td>
-          </tr>
-           <tr>
-              <td id="col_label">Skills<td>:</td></td>
-              <td id="skl">
-                  <select class="select_Dropdown_Input" onChange={getDynamicFilter4} name="DynamicFilter4" id="DynamicFilter4">
-                    {skills.map((skill, index) => (
-                    <option key={index} value={skill}>
-                      {skill}
-                    </option>
-                  ))}
-                  </select>
-              </td>
-          </tr>
-          </tbody>
-      </table>
         </div>
     </div>
     <div id="popup">
@@ -213,4 +174,4 @@ const DESkillTracker = () => {
     );
 };
 
-export default DESkillTracker;
+export default DESkilldivacker;
