@@ -1,99 +1,75 @@
-import React, { useEffect } from 'react';
+import React, {useState, useEffect } from 'react';
 
 const Projects = () => {
-
+  const [addNewProject, setAddNewProject] = useState(false);
+  const [addPRJ, setAddPRJ] = useState(true);
   
-    
+  function enableAddProjectPopup() {
+    if(addNewProject===false){
+      setAddNewProject(true);
+    }
+    else{
+      setAddNewProject(false);
+    }
+  }
+  function changeAddPojectStatus(btn_text) {
+    const pages = document.querySelectorAll('#add_project_popup_btn');
+    pages.forEach(page => {
+        page.classList.remove('selected');
+        if(page.innerText ===btn_text){
+            page.classList.add('selected');
+        }
+    });
+    if(btn_text=="Add"){
+      setAddPRJ(true);
+    }
+    else{
+      setAddPRJ(false);
+    }
+  }
     return(
     <>
 <div id="page_header">
-  <h1>Projects</h1>
+  <h1><span>Projects</span>
+    <button id="add_projects_btn" onClick={enableAddProjectPopup}>+Add</button>
+  </h1>
 </div>
 
-<div class="flex gap-4 p-2">
-  <div class="flex flex-col gap-4 w-1/2">
+<div class="gap-4 p-2">
     <div id="sub_page_box">
       <div id="sub_page_headers">
-        <h3>Projects RAG Status</h3>
+        <h6>Projects RAG Status</h6>
       </div>
       <div class="p-2">
         The Quality Engineering monitors the weekly health check for the
         projects worked on and uses this dashboard for monitoring the high-alert
         projects for solutionizing a better approach to meet the deadlines.
       </div>
-    </div>
-
-    <div id="sub_page_box">
-      <div id="sub_page_headers">
-        <h3>Add New Project</h3>
-      </div>
-      <form
-        id="add-project-form"
-        class="border border-solid border-slate-400 p-2 mt-2 rounded-lg"
-      >
-        <div class="flex gap-4">
-          <input
-            type="text"
-            name="project_name"
-            placeholder="Project Name"
-            class="text_Input"
-            required
-          />
-          <select name="rag_status" class="select_Dropdown_Input" required>
-            <option value="R">Red</option>
-            <option value="A">Amber</option>
-            <option value="G">Green</option>
-          </select>
-          <input
-            type="text"
-            name="impediments"
-            placeholder="Impediments"
-            class="text_Input"
-            required
-          />
-          <input
-            type="text"
-            name="resource"
-            placeholder="Resource"
-            class="text_Input"
-            required
-          />
-        </div>
-        <button type="submit" class="default_Button">Add Project</button>
-      </form>
-      <div class="mt-4 p-2">
-        <input type="file" id="upload-file" accept=".csv, .xlsx" />
-        <button id="upload-button" class="default_Button">
-          Upload Projects
-        </button>
-      </div>
-    </div>
   </div>
-
-  <div class="flex flex-col gap-4 w-1/2">
-    <div id="sub_page_box">
+</div>
+<div class="flex flex-row gap-4 p-2">
+    <div id="sub_page_box" class="w-1/2">
       <div id="sub_page_headers">
-        <h3>Governance - Council Updates</h3>
+        <h6>Governance - Council Updates</h6>
       </div>
       <div class="p-2">
-        <p>- Projects in Red = <span id="rCount">0</span></p>
-        <p>- Projects in Amber = <span id="aCount">0</span></p>
-        <p>- Projects in Green = <span id="gCount">0</span></p>
+        <li>Projects in Red = <span id="rCount">0</span></li>
+        <li>Projects in Amber = <span id="aCount">0</span></li>
+        <li>Projects in Green = <span id="gCount">0</span></li>
       </div>
     </div>
-    <div id="sub_page_box">
+    <div id="sub_page_box" class="w-1/2">
       <div id="sub_page_headers">
-        <h3>Project Overall Status</h3>
+        <h6>Project Overall Status</h6>
       </div>
       <div class="p-2">
         <canvas id="rag-status-chart"></canvas>
       </div>
     </div>
   </div>
-</div>
 
-<div class="flex flex-col gap-4 p-2">
-  <div class="bg-gray-200 p-1 rounded-lg flex justify-between items-center">
+<div id="sub_page_box" class="flex flex-col gap-4 p-2 m-2">
+  <div class="flex justify-between items-center">
     <h3 class="text-lg font-bold text-black-400">RAG Status</h3>
     <div class="flex gap-2">
       <select id="rag-status" name="rag_status" class="select_Dropdown_Input">
@@ -112,7 +88,7 @@ const Projects = () => {
       />
     </div>
   </div>
-  <div class="border border-solid border-slate-400 p-1">
+  <div>
     <div class="flex justify-between bg-gray-400 p-2 rounded-lg">
       <div class="w-1/5 text-left font-bold">Project</div>
       <div class="w-1/5 text-left font-bold">RAG Status</div>
@@ -261,6 +237,69 @@ const Projects = () => {
     </div>
   </div>
 </div>
+{addNewProject&&<div id='add_project_popup'>
+  <button id='add_project_popup_btn' class="selected ml-3" onClick={()=>{changeAddPojectStatus("Add")}}>Add</button>
+  <button id='add_project_popup_btn' onClick={()=>{changeAddPojectStatus("Upload")}}>Upload</button>
+  <button onClick={enableAddProjectPopup} style={{color:'gray',marginLeft:'870px'}}>x</button>
+<div id="sub_page_box" style={{height:'200px'}}>
+  {addPRJ&&
+      <form
+        id="add-project-form"
+      >
+        <div class="gap-4">
+        <div class="flex flex-row">
+        <div class='flex justify-between w-1/2'>
+          <label id="col_label" class='flex justify-between'><span class="text-start">Project Name</span><span class="text-start">:</span></label>
+          <input
+            type="text"
+            name="project_name"
+            placeholder="Project Name"
+            class="text_Input"
+            required
+          />
+        </div>
+        <div class='flex justify-between w-1/2 ml-2'>
+          <label id="col_label" class='flex justify-between'><span class="text-start">RAG Status</span><span class="text-start">:</span></label>
+          <select style={{width:'350px'}} name="rag_status" class="select_Dropdown_Input" required>
+            <option value="R">Red</option>
+            <option value="A">Amber</option>
+            <option value="G">Green</option>
+          </select>
+        </div>
+        </div>
+        <div class="flex flex-row">
+        <div class='flex justify-between w-1/2'>
+          <label id="col_label" class='flex justify-between'><span class="text-start">Impediments</span><span class="text-start">:</span></label>
+          <textarea
+            type="text"
+            name="impediments"
+            placeholder="Impediments"
+            class="text_Input"
+            required
+          />
+        </div>
+        <div class='flex justify-between w-1/2  ml-2'>
+          <label id="col_label" class='flex justify-between'><span class="text-start">Resource</span><span class="text-start">:</span></label>
+          <textarea
+            type="text"
+            name="resource"
+            placeholder="Resource"
+            class="text_Input"
+            required
+          />
+        </div>
+        </div>
+        </div>
+        <button type="submit" class="default_Button">Add</button>
+      </form>}
+      {!addPRJ&&<div class="mt-4 p-2">
+        <input type="file" id="upload-file" accept=".csv, .xlsx" />
+        <button id="upload-button" class="default_Button d-block">
+          Upload
+        </button>
+      </div>}
+    </div>
+    </div>}
     </>
     );
 };

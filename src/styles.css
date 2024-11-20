@@ -748,5 +748,36 @@ textarea::placeholder {
 #resetBtn:active {
     background-color: #ccc;
 }
-
-
+#add_projects_btn{
+    margin-left: 900px; /* p-2: Tailwind's padding of 0.5rem */
+      background-color: #F1B716; /* bg-orange-700: Tailwind's background color for orange-700 */ /* text-white: Tailwind's text color for white */
+      border-radius: 0.25rem;
+      padding: 5px;
+      color: white;
+}
+#add_project_popup{
+    background-color: whitesmoke;
+    position: fixed;
+    display: inline-block;
+    cursor: pointer;
+    z-index: 1;
+    left: 225px;
+    top: 100px;
+    color: black;
+    font-size: 20px;
+    font-weight: 500;
+    border-radius: 5px;
+    padding: 10px;
+    width: 1100px;
+}
+#add_project_popup_btn{
+      background-color: whitesmoke; /* bg-orange-700: Tailwind's background color for orange-700 */ /* text-white: Tailwind's text color for white */
+      border-top-left-radius: 0.25rem;
+      border-top-right-radius: 0.25rem;
+      padding: 5px 25px 2px 25px;
+      color: gray;
+      font-size:13px;
+}
+#add_project_popup_btn.selected{
+    background-color: white;
+}

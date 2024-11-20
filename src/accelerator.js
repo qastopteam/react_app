@@ -72,40 +72,47 @@ const Accelerator = () => {
       useEffect(() => {
         const fetchData = async () => {
 
-          const response = await fetch('http://127.0.0.1:5000//accs');
+          /*const response = await fetch('http://127.0.0.1:5000//accs');
           if (!response.ok) {
             throw new Error('Network response was not ok');
           }
-          const result = await response.json();
+          const result = await response.json();*/
+          const response2 = await fetch('https://my-repo-chi-coral.vercel.app/getacces');
+          if (!response2.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const result2 = await response2.json();
+          //console.log("RESULT",result);
+          console.log("RESULT2",result2["data"]);
           const Comp1=[];
           const Comp2=[];
           const Comp3=[];
-          result.forEach((item) => {
-            if(item[4]==="Data comparator"){
+          result2["data"].forEach((item) => {
+            if(item["category"]==="Data comparator"){
               Comp1.push({
-                Accelerator: item[0],
-                Direct: item[1],
-                SPOC: item[2],
-                EmpID:item[3],
-                Category: item[4]
+                Accelerator: item["accelerator"],
+                Direct: item["link"],
+                SPOC: item["spoc"],
+                EmpID:item["employee_no"],
+                Category: item["category"]
               })
             }
-            if(item[4]==="excel comparator"){
+            if(item["category"]==="excel comparator"){
               Comp2.push({
-                Accelerator: item[0],
-                Direct: item[1],
-                SPOC: item[2],
-                EmpID:item[3],
-                Category: item[4]
+                Accelerator: item["accelerator"],
+                Direct: item["link"],
+                SPOC: item["spoc"],
+                EmpID:item["employee_no"],
+                Category: item["category"]
               })
             }
-            if(item[4]==="web comparator"){
+            if(item["category"]==="web comparator"){
               Comp3.push({
-                Accelerator: item[0],
-                Direct: item[1],
-                SPOC: item[2],
-                EmpID:item[3],
-                Category: item[4]
+                Accelerator: item["accelerator"],
+                Direct: item["link"],
+                SPOC: item["spoc"],
+                EmpID:item["employee_no"],
+                Category: item["category"]
               })
             }
           });

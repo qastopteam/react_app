@@ -188,22 +188,28 @@ const DataEndivyWSR = () => {
       useEffect(() => {
         const fetchData = async () => {
 
-          const response = await fetch('http://127.0.0.1:5000/newemps');
+          /*const response = await fetch('http://127.0.0.1:5000/newemps');
           if (!response.ok) {
             throw new Error('Network response was not ok');
           }
-          const result = await response.json();
-          console.log("RESULT",result);
+          const result = await response.json();*/
+          const response2 = await fetch('https://my-repo-chi-coral.vercel.app/getemps');
+          if (!response2.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const result2 = await response2.json();
+          //console.log("RESULT",result);
+          console.log("RESULT2",result2);
           const emps=[];
           const l=['-- Select --'];
-          for (let emp of result){
-            if (!l.includes(emp[11])) {
-                l.push(emp[11]);  // Add the string to the array if it's not already there
+          for (let emp of result2["data"]){
+            if (!l.includes(emp["lead_name"])) {
+                l.push(emp["lead_name"]);  // Add the string to the array if it's not already there
             }
             emps.push({
-                "name": emp[1],
-                "lead": emp[11],
-                "project": emp[10]
+                "name": emp["employee_name"],
+                "lead": emp["lead_name"],
+                "project": emp["project_name"]
             });
            }
            setEmployees(emps);
