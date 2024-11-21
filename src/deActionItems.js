@@ -3,6 +3,8 @@ import React, { useState,useEffect } from 'react';
 const DEActionItems = () => {
     const [currentTracker, setcurrentTracker] = useState("Action Items for Practice - Request");
     const [currentSelectedTracker, setcurrentSelectedTracker] = useState("Request");
+    const [employees, setEmployees] = useState(['-- Select --']);
+    const [employeeNames, setEmployeeNames] = useState(['-- Select --']);
 
     const leads = ['-- Select --', 'Jeena', 'Thazhuva', 'Sivanash', 'Jennifer'];
     const trackers = [
@@ -20,6 +22,40 @@ const DEActionItems = () => {
         for (let i = 0; i < ele.length; i++) {
             if (ele[i].checked)
                 console.log(ele[i].value);
+        }
+    }
+    function updateDetails() {
+        var empName = document.getElementById("emp_name");
+        var clName = document.getElementById("client_name");
+        var dlName = document.getElementById("delivery_lead");
+        for (let emp of employees){
+            console.log("AFTER SELECT",empName.value,emp)
+            if(empName.value==emp["name"]){
+                clName.value = emp["customer"];
+                dlName.value = emp["lead"];
+            }
+        }
+    }
+    function updateContacts() {
+        var areaSelect = document.getElementById("area");
+        var primaryContact = document.getElementById("primary-contact");
+        var secondaryContact = document.getElementById("secondary-contact");
+
+        if (areaSelect.value === "New Proposals") {
+            primaryContact.value = "Sivanash";
+            secondaryContact.value = "Jennifer";
+        } else if (areaSelect.value === "Practice Capability Demo") {
+            primaryContact.value = "Sahil";
+            secondaryContact.value = "Lokeshwaran";
+        } else if (areaSelect.value === "Estimates") {
+            primaryContact.value = "Thazuva";
+            secondaryContact.value = "Jenna";
+        } else if (areaSelect.value === "Practice Leadership Connect") {
+            primaryContact.value = "Hashim";
+            secondaryContact.value = "Lakshman";
+        } else {
+            primaryContact.value = "";
+            secondaryContact.value = "";
         }
     }
     function getAreaofSupport() {
@@ -110,7 +146,7 @@ const DEActionItems = () => {
     }
     function PopupFunction(Tracker) {
       var popup = document.getElementById("myPopup");
-      popup.textContent = `${Tracker} Form Submitted Successfully`;
+      popup.textContent = `${Tracker}`;
         popup.classList.add('custom-background');
       //popup.classList.toggle("show");
       setTimeout(function () {
@@ -137,25 +173,26 @@ const DEActionItems = () => {
          if(area_of_support=="Request"){
          selectElement =document.getElementById("ChooseRequestType");
          let request_type =selectElement.options[selectElement.selectedIndex].textContent;
-         selectElement =document.getElementById("ClientName");
-         let client_name =selectElement.options[selectElement.selectedIndex].textContent;
-         selectElement =document.getElementById("QEDeliveryLead");
-         let qe_delivery_lead =selectElement.options[selectElement.selectedIndex].textContent;
-         let requestor_name = document.getElementById("RequestorName").value
          let request_description = document.getElementById("Requesspanescription").value
+         var empName = document.getElementById("emp_name").value;
+        var clName = document.getElementById("client_name").value;
+        var dlName = document.getElementById("delivery_lead").value;
+        var areaSelect = document.getElementById("area").value;
+        var primaryContact = document.getElementById("primary-contact").value;
+        var secondaryContact = document.getElementById("secondary-contact").value;
          if(request_type=="--Select--"){
           flag=false;
           document.getElementById('request_type_alert').textContent = "*Please Select Request Type";
          }
-         if(client_name=="-- Select --"){
+         if(clName=="-- Select --"){
           flag=false;
           document.getElementById('client_name_alert').textContent = "*Please Select Client Name";
          }
-         if(qe_delivery_lead=="-- Select --"){
+         if(dlName=="-- Select --"){
           flag=false;
           document.getElementById('qe_delivery_lead_alert').textContent = "*Please Select QE Delivery Lead";
          }
-         if(requestor_name==""){
+         if(empName==""){
           flag=false;
           document.getElementById('requestor_name_alert').textContent = "*Please Enter Requestor Name";
          }
@@ -164,24 +201,27 @@ const DEActionItems = () => {
           document.getElementById('request_description_alert').textContent = "*Please Enter Request Description";
          }
          if(flag){
-          /*fetch("https://37727f4f-9aca-4f3e-a138-f54e7c36574d-00-27qjdf76eegx8.sisko.replit.dev/gip", {
+          fetch("https://my-repo-chi-coral.vercel.app/inserttoai", {
           method: "POST",
-          body: JSON.stringify({
-          "Area_of_Support":area_of_support,
-          "Request_Type":request_type,
-          "Client_Name":client_name,
-          "QE_Delivery_Lead":qe_delivery_lead,
-          "Requestor_Name":requestor_name,
-          "Request_Description":request_description
-          }),
+          body: JSON.stringify([{
+          "action_item_type":area_of_support,
+          "employee_name":empName,
+          "client_name":clName,
+          "lead_name":dlName,
+          "request_type":request_type,
+          "request_area":areaSelect,
+          "poc_primary":primaryContact,
+          "poc_secondary":secondaryContact,
+          "request_description":request_description
+          }]),
           headers: {
            "Content-type": "application/json; charset=UTF-8"
           }
           })
           .then((response) => response.json())
-          .then((json) => console.log(json));*/
+          .then((json) => console.log(json));
 
-          PopupFunction(Tracker);
+          PopupFunction("Request Submitted Successfully");
              //selectElement.value=Tracker;
                //getChooseTracker();
          }}
@@ -204,22 +244,22 @@ const DEActionItems = () => {
              document.getElementById('areas_to_improve_alert').textContent = "*Please Enter Areas to Improve";
             }
             if(flag){
-             /*fetch("https://37727f4f-9aca-4f3e-a138-f54e7c36574d-00-27qjdf76eegx8.sisko.replit.dev/gip", {
+             fetch("https://my-repo-chi-coral.vercel.app/inserttoai", {
              method: "POST",
-             body: JSON.stringify({
-             "Area_of_Support":area_of_support,
-             "Areas_to_Improve":areas_to_improve,
-             "Request_Rating":request_rating,
-             "L_and_D_Rating":lnd_rating
-             }),
+             body: JSON.stringify([{
+             "action_item_type":area_of_support,
+             "area_of_improvement":areas_to_improve,
+             "rating_for_request":request_rating,
+             "rating_for_l_and_d":lnd_rating
+             }]),
              headers: {
               "Content-type": "application/json; charset=UTF-8"
              }
              })
              .then((response) => response.json())
-             .then((json) => console.log(json));*/
+             .then((json) => console.log(json));
 
-             PopupFunction(Tracker);
+             PopupFunction("Feedback Submitted Successfully");
                 //selectElement.value=Tracker;
                   //getChooseTracker();
             }
@@ -231,7 +271,37 @@ const DEActionItems = () => {
     }
 
 
+    useEffect(() => {
+        const fetchData = async () => {
 
+          /*const response = await fetch('http://127.0.0.1:5000/newemps');
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const result = await response.json();*/
+          const response2 = await fetch('https://my-repo-chi-coral.vercel.app/getemps');
+          if (!response2.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const result2 = await response2.json();
+          //console.log("RESULT",result);
+          console.log("RESULT2",result2);
+          const emps=[];
+          const emp_names=['-- Select --'];
+          for (let emp of result2["data"]){
+            emps.push({
+                "name": emp["employee_name"],
+                "lead": emp["lead_name"],
+                "customer": emp["customer_name"]
+            });
+            emp_names.push(emp["employee_name"]);
+           }
+           setEmployees(emps);
+           setEmployeeNames(emp_names);
+        };
+    
+        fetchData(); // Call the function to fetch data
+      }, []);
 
     return(
         <>
@@ -264,33 +334,27 @@ const DEActionItems = () => {
             <div class='filters'>
                 <label id="col_label" class='flex justify-between'><span class="text-start">Requestor Name*</span><span class="text-start">:</span></label>
                 <span>
-                    <input style={{width:'350px'}} class="text_Input" onChange={getRequestorName} type="text" id="RequestorName" name="RequestorName" placeholder="Enter Requestor Name"/>
+                <select style={{width:'350px'}} class="select_Dropdown_Input" onChange={updateDetails} name="ClientName" id="emp_name">
+                    {employeeNames.map((emp, index) => (
+                    <option key={index} value={emp}>
+                      {emp}
+                    </option>
+                  ))}
+                    </select>
                 </span>
             </div>
             <div><span id="requestor_name_alert"></span></div>
             <div class='filters'>
                 <label id="col_label" class='flex justify-between'><span class="text-start">Client Name*</span><span class="text-start">:</span></label>
                 <span id="clnt" >
-                    <select style={{width:'350px'}} class="select_Dropdown_Input" onChange={getClientName} name="ClientName" id="ClientName">
-                    {client_names.map((client_name, index) => (
-                    <option key={index} value={client_name}>
-                      {client_name}
-                    </option>
-                  ))}
-                    </select>
+                <input style={{width:'350px'}} class="text_Input" type="text" id="client_name" placeholder="Client Name" />
                 </span>
             </div>
             <div><span id="client_name_alert"></span></div>
             <div class='filters'>
                 <label id="col_label" class='flex justify-between'><span class="text-start">QE Delivery Lead*</span><span class="text-start">:</span></label>
                 <span>
-                    <select style={{width:'350px'}} class="select_Dropdown_Input" onChange={getQEDeliveryLead} name="QEDeliveryLead" id="QEDeliveryLead">
-                    {leads.map((lead, index) => (
-                    <option key={index} value={lead}>
-                      {lead}
-                    </option>
-                  ))}
-                    </select>
+                <input style={{width:'350px'}} class="text_Input" type="text" id="delivery_lead" placeholder="Delivery Lead" />
                 </span>
             </div>
             <div><span id="qe_delivery_lead_alert"></span></div>
@@ -307,6 +371,29 @@ const DEActionItems = () => {
                 </span>
             </div>
             <div><span id="request_type_alert"></span></div>
+            <div class='filters'>
+                <label id="col_label" class='flex justify-between'><span class="text-start">Request Area*</span><span class="text-start">:</span></label>
+                <span>
+                    <select style={{width:'350px'}} class="select_Dropdown_Input" onChange={updateContacts} name="RequestArea" id="area">
+                                <option value="">Choose an Area</option>
+                                <option value="New Proposals">New Proposals</option>
+                                <option value="Practice Capability Demo">Practice Capability Demo</option>
+                                <option value="Estimates">Estimates</option>
+                                <option value="Practice Leadership Connect">Practice Leadership Connect</option>
+                    </select>
+                </span>
+            </div>
+            <div><span id="request_type_alert"></span></div>
+            <div class='filters'>
+                <label id="col_label" class='flex justify-between'><span class="text-start">Point Of Contact - Primary*</span><span class="text-start">:</span></label>
+                <span><input style={{width:'350px'}} class="text_Input" type="text" id="primary-contact" placeholder="Point Of Contact - Primary" /></span>
+            </div>
+            <div><span id="request_description_alert"></span></div>
+            <div class='filters'>
+                <label id="col_label" class='flex justify-between'><span class="text-start">Point Of Contact - Secondary*</span><span class="text-start">:</span></label>
+                <span><input style={{width:'350px'}} class="text_Input" type="text" id="secondary-contact" placeholder="Point Of Contact - Secondary" /></span>
+            </div>
+            <div><span id="request_description_alert"></span></div>
             <div class='filters'>
                 <label id="col_label" class='flex justify-between'><span class="text-start">Request Description*</span><span class="text-start">:</span></label>
                 <span><textarea class="text_Input" id="Requesspanescription" onChange={getRequesspanescription} placeholder="Enter Request Description"></textarea></span>

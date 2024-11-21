@@ -1,9 +1,13 @@
 import React, {useState, useEffect } from 'react';
+import * as XLSX from 'xlsx';
+import { format } from 'date-fns';
 
 const DataEndivyWSR = () => {
     const [employees, setEmployees] = useState([]);
     const [leads, setLeads] = useState(['-- Select --']);
+    const [resources, setResources] = useState(['-- Select --']);
     const [projects, setProjects] = useState(['-- Select --']);
+    const [uppopup, setuppopup] = useState(false);
     const date = new Date();
     const formatter = new Intl.DateTimeFormat('zh-CN', { day: '2-digit', month: '2-digit', year: 'numeric' });
     const formattedDate = formatter.format(date).replaceAll('/', '-');
@@ -12,6 +16,57 @@ const DataEndivyWSR = () => {
         '-- Select --', 'Web App Testing', 'Data Testing',
         'Performance testing', 'BI Testing'
     ];
+    const [exceldata, setExcelData] = useState([]);
+
+  // Function to handle file selection
+  const handleFileChange = (e) => {
+    const file = e.target.files[0]; // Get the first selected file
+    if (file) {
+      const fileExtension = file.name.split('.').pop().toLowerCase();
+      
+      // Call appropriate function depending on file type
+      if (fileExtension === 'csv') {
+        readCSV(file);
+      } else if (fileExtension === 'xlsx') {
+        readExcel(file);
+      } else {
+        alert('Please upload a .csv or .xlsx file');
+      }
+    }
+  };
+
+  // Function to read CSV file
+  const readCSV = (file) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const text = e.target.result; // File content as string
+      const rows = text.split('\n'); // Split the file into rows by newline
+      const data = rows.slice(1).map((row) => row.split(',')); // Skip the header (first row)
+      console.log("DATA",data);
+      setExcelData(data); // Save the data into state
+    };
+    reader.readAsText(file); // Read file as text (use this for .csv files)
+  };
+
+  // Function to read Excel (.xlsx) file
+  const readExcel = (file) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const data = e.target.result; // Raw binary data from file
+      const workbook = XLSX.read(data, { type: 'binary' });
+
+      // Get the first sheet from the Excel file
+      const sheetName = workbook.SheetNames[0];
+      const sheet = workbook.Sheets[sheetName];
+
+      // Convert sheet data to JSON (excluding header)
+      const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 }); // Get rows as array of arrays
+      const rows = jsonData.slice(1); // Exclude the header (first row)
+      console.log("DATA",rows);
+      setExcelData(rows); // Save the data into state
+    };
+    reader.readAsBinaryString(file); // Read file as binary for .xlsx files
+  };
 
     function getPracticeLead() {
         const selectElement =document.getElementById("PracticeLead");
@@ -26,11 +81,7 @@ const DataEndivyWSR = () => {
         emps.push(emp.name);
         }
         }
-        document.getElementById("ResourceName").innerHTML=emps.map((employee) => `
-                <option  value=${employee}>${employee}</option>
-            `,
-                        )
-                        .join("");
+        setResources(emps);
     }
     function gedivesourceName() {
         let selectElement =document.getElementById("PracticeLead");
@@ -47,11 +98,7 @@ const DataEndivyWSR = () => {
         }
         console.log(projects);
         //document.querySelector('.resource_name').textContent = resource_name;
-        document.getElementById("ProjectName").innerHTML=projects.map((project) => `
-            <option  value=${project}>${project}</option>
-        `,
-                    )
-                    .join("");
+        setProjects(projects);
     }
     function getProjectName() {
         let selectElement =document.getElementById("ProjectName");
@@ -81,11 +128,11 @@ const DataEndivyWSR = () => {
         document.getElementById('weekly_deliverables_alert').textContent = "";
         }
     }
-    function getChoosedivacker() {
-        let divacker ="Weekly RAG Status"
-        //output = document.getElementById("Choosedivacker").value
-        //document.querySelector('.choose_divacker').textContent = output;
-        //divacker = document.getElementById("Choosedivacker").value
+    function getChoosetracker() {
+        let tracker ="Weekly RAG Status"
+        //output = document.getElementById("Choosetracker").value
+        //document.querySelector('.choose_tracker').textContent = output;
+        //tracker = document.getElementById("Choosetracker").value
         
          
     }
@@ -96,9 +143,9 @@ const DataEndivyWSR = () => {
         }, 5000);
         //$('#GFG').text("Div hides after 1 second.");
     }
-    function PopupFunction(divacker) {
+    function PopupFunction(tracker) {
       var popup = document.getElementById("myPopup");
-      popup.textContent = `${divacker} Form Submitted Successfully`;
+      popup.textContent = `${tracker}`;
         popup.classList.add('custom-background');
       //popup.classList.toggle("show");
       setTimeout(function () {
@@ -106,8 +153,44 @@ const DataEndivyWSR = () => {
           popup.classList.remove('custom-background');
         }, 5000);
     }
-    function sendInput() {
-        let divacker ="Weekly RAG Status"
+    const upload_new_project = async ()=>{
+        const data=[]
+        for (let wsr of exceldata){
+          if (wsr.length > 1) {
+            data.push({
+                "employee_id":wsr[0],
+                "project_lead":wsr[1],
+                "resource_name":wsr[2],
+                "project_name":wsr[3],
+                "rag_status": wsr[4],
+                "testing_type": wsr[5],
+                "weekly_deliverable": wsr[6],
+                "sub_tasks":wsr[7],
+                "impediments":wsr[8],
+                "action_items":wsr[9],
+                "comments":wsr[10],
+                "upcoming_leave_from_date":wsr[11],
+                "upcoming_leave_to_date":wsr[12]
+                });
+          }
+         }
+        console.log("DATA",data);
+        const response = await fetch('http://127.0.0.1:5000/inserttowsr', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data), // Data to send in the POST request
+        });
+        if (!response.ok) {
+                throw new Error('Network response was not ok');
+        }
+        const result = await response.json();
+        console.log("Result",result);
+        PopupFunction("WSR Uploaded Successfully");
+      }
+    async function sendInput() {
+        let tracker ="Weekly RAG Status"
         let selectElement =document.getElementById("PracticeLead");
         let practice_lead =selectElement.options[selectElement.selectedIndex].textContent;
         selectElement =document.getElementById("ResourceName");
@@ -143,37 +226,51 @@ const DataEndivyWSR = () => {
           document.getElementById('weekly_deliverables_alert').textContent = "*Please Enter Weekly Deliverables";
          }
          if(flag){
-          /*let  sub_tasks = document.getElementById("SubTasks").value
+          let  sub_tasks = document.getElementById("SubTasks").value
           let impediments = document.getElementById("Impediments").value
           let action_items = document.getElementById("ActionItems").value
           let comments = document.getElementById("Comments").value
           let start_date = document.getElementById("Starspanate").value
           let end_date = document.getElementById("EndDate").value
-          fetch("https://37727f4f-9aca-4f3e-a138-f54e7c36574d-00-27qjdf76eegx8.sisko.replit.dev/gip", {
+          const response2 = await fetch('https://my-repo-chi-coral.vercel.app/getemps');
+          if (!response2.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const result2 = await response2.json();
+          //console.log("RESULT",result);
+          console.log("RESULT2",result2);
+          let emp_id=[];
+          for (let emp of result2["data"]){
+            if (emp["employee_name"]==resource_name) {
+                emp_id=emp["employee_no"]
+            }
+           }
+          fetch("http://127.0.0.1:5000/inserttowsr", {
           method: "POST",
-          body: JSON.sdivingify({
-          "Practice_Lead":practice_lead,
-          "Resource_Name":resource_name,
-          "Project_Name":project_name,
-          "RAG_Status": rags,
-          "Test_Type": test_type,
-          "Weekly_Deliverable": weekly_deliverable,
-          "Sub_Tasks":sub_tasks,
-          "Impediments":impediments,
-          "Action_Items":action_items,
-          "Comments":comments,
-          "Start_Date":start_date,
-          "End_Date":end_date
-          }),
+          body: JSON.stringify([{
+          "employee_id":emp_id,
+          "project_lead":practice_lead,
+          "resource_name":resource_name,
+          "project_name":project_name,
+          "rag_status": rags,
+          "testing_type": test_type,
+          "weekly_deliverable": weekly_deliverable,
+          "sub_tasks":sub_tasks,
+          "impediments":impediments,
+          "action_items":action_items,
+          "comments":comments,
+          "upcoming_leave_from_date":start_date,
+          "upcoming_leave_to_date":end_date
+          }]),
           headers: {
            "Content-type": "application/json; charset=UTF-8"
           }
           })
           .then((response) => response.json())
-          .then((json) => console.log(json));*/
+          .then((json) => console.log(json));
 
-          PopupFunction(divacker);
-               getChoosedivacker();
+          PopupFunction("WSR Form Submitted Successflly");
+               getChoosetracker();
          }
          else{
          AlertFunc();
@@ -182,7 +279,7 @@ const DataEndivyWSR = () => {
     }
 
     useEffect(() => {
-        getChoosedivacker();
+        getChoosetracker();
       },[]);
     
       useEffect(() => {
@@ -193,7 +290,7 @@ const DataEndivyWSR = () => {
             throw new Error('Network response was not ok');
           }
           const result = await response.json();*/
-          const response2 = await fetch('https://my-repo-chi-coral.vercel.app/getemps');
+          const response2 = await fetch('http://127.0.0.1:5000/getproj');
           if (!response2.ok) {
             throw new Error('Network response was not ok');
           }
@@ -244,7 +341,11 @@ const DataEndivyWSR = () => {
               <label id="col_label" class='flex justify-between'><span class="text-start">Resource Name*</span><span class="text-start">:</span></label>
               <span>
                   <select class="select_Dropdown_Input" onChange={gedivesourceName} name="ResourceName" id="ResourceName">
-                      <option  value="-- Select --">-- Select --</option>
+                      {resources.map((resouce, index) => (
+            <option key={index} value={resouce}>
+              {resouce}
+            </option>
+          ))}
                   </select>
               </span>
           </div>
@@ -330,6 +431,9 @@ const DataEndivyWSR = () => {
         <button class="default_Button" id="Submit_Button" onClick={sendInput}>
             Submit
         </button>
+        <button class="default_Button" onClick={()=>{setuppopup(true)}}>
+            Upload
+        </button>
         <label id="alert"></label>
         </div>
     </div>
@@ -337,6 +441,18 @@ const DataEndivyWSR = () => {
     <div id="popup">
         <span class="popuptext" id="myPopup"></span>
     </div>
+    {uppopup&&
+    <div id='add_project_popup'>
+    <button onClick={()=>{setuppopup(false)}} style={{color:'gray',marginLeft:'1000px'}}>x</button>
+    <div id="sub_page_box" style={{height:'200px'}}>
+    <div class="mt-4 p-2">
+        <input type="file" id="upload-file" accept=".csv, .xlsx" onChange={handleFileChange}/>
+        <button id="upload-button" class="default_Button d-block" onClick={upload_new_project}>
+          Upload
+        </button>
+      </div>
+    </div>
+    </div>}
     </>
     );
 };

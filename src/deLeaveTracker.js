@@ -1,129 +1,28 @@
-import React, { useEffect } from 'react';
+import React, {useState, useEffect } from 'react';
 
 const DELeaveTracker = () => {
+    const [employees, setEmployees] = useState([]);
+    const [employeeNames, setEmployeeNames] = useState(['-- Select --']);
+    const [leads, setLeads] = useState(['-- Select --']);
+    const [empID,setEmpID] = useState();
     const leave_types = [
         '-- Select --', 'Planned Leave', 'Un-Planned Leave', 'Maternity Leave',
         'Paternity Leave', 'Adoption Leave'
     ];
-    const employees = [
-        {
-            "name": "Aarti Kyama",
-            "lead": "Thazhuva",
-            "project": "PEPSICO_PFNA ADD CUT PORTAL"
-        },
-        {
-            "name": "Abhishek Gupta",
-            "lead": "Jeena",
-            "project": "MARS_US_MW_Fetch Dashboard Enhancement_2023"
-        },
-        {
-            "name": "Ajit Singh",
-            "lead": "Jennifer",
-            "project": "Practise - Bench"
-        },
-        {
-            "name": "Akash Gupta",
-            "lead": "Thazhuva",
-            "project": "PEPSICO_CTO CV PEPIRIS"
-        },
-        {
-            "name": "Akib Basheer",
-            "lead": "Thazhuva",
-            "project": "PEPSICO_CTO CV_LABEL RIGHT"
-        },
-        {
-            "name": "Amar Namdev Memane",
-            "lead": "Thazhuva",
-            "project": "PEPSICO_DATA FOUNDATION_FP&A"
-        },
-        {
-            "name": "Aniket Baban Turankar",
-            "lead": "Jennifer",
-            "project": "T MOBILE_CUSTOMER SALESFORCE DATA PRODUCT"
-        },
-        {
-            "name": "Anitha Paramasivan",
-            "lead": "Sivanash",
-            "project": "MERCK_SOTATERCEPT_ LAUNCH DASHBOARD"
-        },
-        {
-            "name": "Anupama Vaibhav Shinde",
-            "lead": "Thazhuva",
-            "project": "PEPSICO_CGF_COMPASS"
-        },
-        {
-            "name": "Arnavi Amol Patil",
-            "lead": "Jeena",
-            "project": "NATIONWIDE_DATA_CURATION_SERVICE"
-        },
-        {
-            "name": "Arputha Aswin Chandra Sekar",
-            "lead": "Sivanash",
-            "project": "QUANTUM ENERGY PARTNERS-2"
-        },
-        {
-            "name": "Arul Sekar",
-            "lead": "Thazhuva",
-            "project": "PEPSICO_DATA FOUNDATION_FP&A"
-        },
-        {
-            "name": "Bhagya Sree Kota",
-            "lead": "Thazhuva",
-            "project": "PEPSICO_PFNA IWMS"
-        },
-        {
-            "name": "Charan Kumar Thanugonda",
-            "lead": "Jeena",
-            "project": "PROLOGIS_COO KPI Dashboard_Retainer"
-        },
-        {
-            "name": "Ezhilarasi Rajendran",
-            "lead": "Jennifer",
-            "project": "Practise - Bench"
-        },
-        {
-            "name": "Jagadeesh Kumar Chippada",
-            "lead": "Sivanash",
-            "project": "QUANTUM ENERGY PARTNERS-2"
-        },
-        {
-            "name": "Jeena Jacob",
-            "lead": "Jeena",
-            "project": "PROLOGIS_STARTER PACKS_MNG_RETAINER"
-        },
-        {
-            "name": "Jeevitha Venkatesan",
-            "lead": "Jeena",
-            "project": "PROLOGIS_STARTER PACKS_MNG_RETAINER"
-        },
-        {
-            "name": "Jenifer Baby Celus Arulraj",
-            "lead": "Jennifer",
-            "project": "PROLOGIS_STARTER PACKS_MNG_RETAINER"
-        },
-    ];
-    const leads = ['-- Select --', 'Jeena', 'Thazhuva', 'Sivanash', 'Jennifer'];
 
-    function getPracticeLead() {
-        let selectElement =document.getElementById("PracticeLead");
-        let lead_name =
-            selectElement.options
-            [selectElement.selectedIndex].textContent;
+    function getResourceName() {
+        let lead_name =document.getElementById("PracticeLead");
         //lead_name = document.getElementById("PracticeLead").value
         //document.querySelector('.practice_lead').textContent = lead_name;
         let emps= ['-- Select --'];
         for (let emp of employees){
-        if (emp.lead==lead_name){
-        emps.push(emp.name);
+        if (emp.name==document.getElementById("ResourceName").value){
+            document.getElementById("PracticeLead").value=emp["lead"]
+            setEmpID(emp["ID"])
         }
         }
-        document.getElementById("ResourceName").innerHTML=emps.map((employee) => `
-                <option  value=${employee}>${employee}</option>
-            `,
-                        )
-                        .join("");
     }
-    function getResourceName() {
+    /*function getResourceName() {
         let selectElement =document.getElementById("PracticeLead");
         let lead_name =selectElement.options[selectElement.selectedIndex].textContent;
         selectElement =document.getElementById("ResourceName");
@@ -138,7 +37,7 @@ const DELeaveTracker = () => {
         }
         console.log(projects);
         //document.querySelector('.resource_name').textContent = resource_name;
-    }
+    }*/
 
     function getLeaveType() {
         let output = document.getElementById("LeaveType").value
@@ -146,8 +45,9 @@ const DELeaveTracker = () => {
         document.getElementById('leave_type_alert').textContent = "";
     }
     function gespanateDiff(){
-        let date1 = document.getElementById("Starspanate").value
+        let date1 = document.getElementById("StartDate").value
         let date2 = document.getElementById("EndDate").value
+        console.log("Dates",date1,date2);
         var d1 = new Date(date1);
         var d2 = new Date(date2);
         var diff = d2.getTime() - d1.getTime();
@@ -167,7 +67,7 @@ const DELeaveTracker = () => {
     }
     function PopupFunction(Tracker) {
       var popup = document.getElementById("myPopup");
-      popup.textContent = `${Tracker} Form Submitted Successfully`;
+      popup.textContent = `${Tracker}`;
         popup.classList.add('custom-background');
       //popup.classList.toggle("show");
       setTimeout(function () {
@@ -183,6 +83,9 @@ const DELeaveTracker = () => {
          let resource_name =selectElement.options[selectElement.selectedIndex].textContent;
          selectElement =document.getElementById("LeaveType");
          let leave_type =selectElement.options[selectElement.selectedIndex].textContent;
+         let date1 = document.getElementById("StartDate").value;
+        let date2 = document.getElementById("EndDate").value;
+        let leave_days_count=document.getElementById('total_working_days').value;
          let flag=true;
          if(practice_lead=="-- Select --"){
           flag=false;
@@ -195,21 +98,25 @@ const DELeaveTracker = () => {
           document.getElementById('leave_type_alert').textContent = "*Please Select Leave Type";
          }
          if(flag){
-          /*fetch("https://37727f4f-9aca-4f3e-a138-f54e7c36574d-00-27qjdf76eegx8.sisko.replit.dev/gip", {
+          fetch("https://my-repo-chi-coral.vercel.app/inserttolt", {
           method: "POST",
-          body: JSON.stringify({
-          "Practice_Lead":practice_lead,
-          "Resource_Name":resource_name,
-          "Leave_Type":leave_type
-          }),
+          body: JSON.stringify([{
+          "employee_id":empID,
+          "lead_name":practice_lead,
+          "employee_name":resource_name,
+          "leave_type":leave_type,
+          "leave_start_date":date1,
+          "leave_end_date":date2,
+          "leave_days_count":leave_days_count
+          }]),
           headers: {
            "Content-type": "application/json; charset=UTF-8"
           }
           })
           .then((response) => response.json())
-          .then((json) => console.log(json));*/
+          .then((json) => console.log(json));
 
-          PopupFunction(Tracker);
+          PopupFunction("Leave Request Submitted Successfully");
           //selectElement.value=Tracker;
           //getChooseTracker();
          }
@@ -217,6 +124,44 @@ const DELeaveTracker = () => {
          AlertFunc();
          }
     }
+
+    useEffect(() => {
+        const fetchData = async () => {
+
+          /*const response = await fetch('http://127.0.0.1:5000/newemps');
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const result = await response.json();*/
+          const response2 = await fetch('https://my-repo-chi-coral.vercel.app/getemps');
+          if (!response2.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const result2 = await response2.json();
+          //console.log("RESULT",result);
+          console.log("RESULT2",result2);
+          const emps=[];
+          const l=['-- Select --'];
+          const empNames=['-- Select --'];
+          for (let emp of result2["data"]){
+            if (!l.includes(emp["lead_name"])) {
+                l.push(emp["lead_name"]);  // Add the string to the array if it's not already there
+            }
+            empNames.push(emp["employee_name"]);
+            emps.push({
+                "ID":emp["employee_no"],
+                "name": emp["employee_name"],
+                "lead": emp["lead_name"],
+                "project": emp["project_name"]
+            });
+           }
+           setEmployees(emps);
+           setLeads(l);
+           setEmployeeNames(empNames)
+        };
+    
+        fetchData(); // Call the function to fetch data
+      }, []);
 
     return(
         <>
@@ -226,23 +171,27 @@ const DELeaveTracker = () => {
         <div id="part1">
         <div id="EntryForm">
         <div class='filters'>
+              <label id="col_label" class='flex justify-between'><span class="text-start">Resource Name</span><span class="text-start">:</span></label>
+              <span>
+                  <select style={{width:'350px'}} class="select_Dropdown_Input" onChange={getResourceName} name="ResourceName" id="ResourceName">
+                  {employeeNames.map((emp, index) => (
+                    <option key={index} value={emp}>
+                      {emp}
+                    </option>
+                  ))}
+                  </select>
+              </span>
+          </div>
+        <div class='filters'>
               <label id="col_label" class='flex justify-between'><span class="text-start">Practice Lead</span><span class="text-start">:</span></label>
               <span>
-                    <select style={{width:'350px'}} class="select_Dropdown_Input" onChange={getPracticeLead} name="PracticeLead" id="PracticeLead">
+                    <select style={{width:'350px'}} class="select_Dropdown_Input" name="PracticeLead" id="PracticeLead">
                     {leads.map((lead, index) => (
                     <option key={index} value={lead}>
                       {lead}
                     </option>
                   ))}
                     </select>
-              </span>
-          </div>
-          <div class='filters'>
-              <label id="col_label" class='flex justify-between'><span class="text-start">Resource Name</span><span class="text-start">:</span></label>
-              <span>
-                  <select style={{width:'350px'}} class="select_Dropdown_Input" onChange={getResourceName} name="ResourceName" id="ResourceName">
-                      <option  value="-- Select --">-- Select --</option>
-                  </select>
               </span>
           </div>
         <div class='filters'>
@@ -260,11 +209,11 @@ const DELeaveTracker = () => {
         <div><span id="leave_type_alert"></span></div>
         <div class='filters'>
             <label id="col_label" class='flex justify-between'><span class="text-start">Start Date</span><span class="text-start">:</span></label>
-            <span><input class="text_Input" type="date" id="Starspanate" onChange={gespanateDiff} name="trip-start" value="2024-05-22" min="2018-01-01" max="2025-12-31" /></span>
+            <span><input class="text_Input" type="date" id="StartDate" onChange={gespanateDiff} name="trip-start"  min="2018-01-01" max="2025-12-31" /></span>
         </div>
         <div class='filters'>
             <label id="col_label" class='flex justify-between'><span class="text-start">End Date</span><span class="text-start">:</span></label>
-            <span><input class="text_Input" type="date" id="EndDate" onchange={gespanateDiff} name="trip-end" value="2024-05-22" min="2018-01-01" max="2025-12-31" /></span>
+            <span><input class="text_Input" type="date" id="EndDate" onChange={gespanateDiff} name="trip-end" min="2018-01-01" max="2025-12-31" /></span>
         </div>
         <div class='filters'>
             <label id="col_label" class='flex justify-between'><span class="text-start">Total Working Days</span><span class="text-start">:</span></label>

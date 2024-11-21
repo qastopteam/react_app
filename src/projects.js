@@ -1,8 +1,126 @@
 import React, {useState, useEffect } from 'react';
+import * as XLSX from 'xlsx';
+
 
 const Projects = () => {
   const [addNewProject, setAddNewProject] = useState(false);
   const [addPRJ, setAddPRJ] = useState(true);
+  const [exceldata, setData] = useState([]);
+  const [employees, setEmployees] = useState(['-- Select --']);
+    const [leads, setLeads] = useState(['-- Select --']);
+
+  // Function to handle file selection
+  const handleFileChange = (e) => {
+    const file = e.target.files[0]; // Get the first selected file
+    if (file) {
+      const fileExtension = file.name.split('.').pop().toLowerCase();
+      
+      // Call appropriate function depending on file type
+      if (fileExtension === 'csv') {
+        readCSV(file);
+      } else if (fileExtension === 'xlsx') {
+        readExcel(file);
+      } else {
+        alert('Please upload a .csv or .xlsx file');
+      }
+    }
+  };
+
+  // Function to read CSV file
+  const readCSV = (file) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const text = e.target.result; // File content as string
+      const rows = text.split('\n'); // Split the file into rows by newline
+      const data = rows.slice(1).map((row) => row.split(',')); // Skip the header (first row)
+      console.log("DATA",data);
+      setData(data); // Save the data into state
+    };
+    reader.readAsText(file); // Read file as text (use this for .csv files)
+  };
+
+  // Function to read Excel (.xlsx) file
+  const readExcel = (file) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const data = e.target.result; // Raw binary data from file
+      const workbook = XLSX.read(data, { type: 'binary' });
+
+      // Get the first sheet from the Excel file
+      const sheetName = workbook.SheetNames[0];
+      const sheet = workbook.Sheets[sheetName];
+
+      // Convert sheet data to JSON (excluding header)
+      const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 }); // Get rows as array of arrays
+      const rows = jsonData.slice(1); // Exclude the header (first row)
+      console.log("DATA",rows);
+      setData(rows); // Save the data into state
+    };
+    reader.readAsBinaryString(file); // Read file as binary for .xlsx files
+  };
+  function PopupFunction() {
+    var popup = document.getElementById("myPopup");
+    popup.textContent = `Project Added Successfully`;
+      popup.classList.add('custom-background');
+    //popup.classList.toggle("show");
+    setTimeout(function () {
+          popup.textContent = "";
+        popup.classList.remove('custom-background');
+      }, 5000);
+  }
+  const add_new_project = async (e)=>{
+    e.preventDefault();
+    let project = document.getElementById("project_name").value;
+    let customer = document.getElementById("customer_name").value;
+    let employee = document.getElementById("employee_name").value;
+    let lead = document.getElementById("lead_name").value;
+    const data=[{"project_name":project,"customer_name":customer,"employee_name":employee,"lead_name":lead}];
+    console.log("DATA",data);
+    const response = await fetch('https://my-repo-chi-coral.vercel.app/inserttoproject', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data), // Data to send in the POST request
+    });
+    if (!response.ok) {
+            throw new Error('Network response was not ok');
+    }
+    const result = await response.json();
+    console.log("Result",result);
+    document.getElementById('project_name').value = '';
+    document.getElementById('customer_name').value = '';
+    document.getElementById('employee_name').value = '-- Select --';
+    document.getElementById('lead_name').value = '-- Select --';
+    PopupFunction();
+  }
+  const upload_new_project = async ()=>{
+    const data=[]
+    for (let proj of exceldata){
+      if (proj.length > 1) {
+        data.push({
+          "project_name": proj[0],
+          "customer_name": proj[1],
+          "employee_name": proj[2],
+          "lead_name": proj[3]
+      });
+      }
+     }
+    console.log("DATA",data);
+    const response = await fetch('https://my-repo-chi-coral.vercel.app/inserttoproject', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data), // Data to send in the POST request
+    });
+    if (!response.ok) {
+            throw new Error('Network response was not ok');
+    }
+    const result = await response.json();
+    console.log("Result",result);
+    PopupFunction();
+  }
   
   function enableAddProjectPopup() {
     if(addNewProject===false){
@@ -27,6 +145,39 @@ const Projects = () => {
       setAddPRJ(false);
     }
   }
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+
+      /*const response = await fetch('http://127.0.0.1:5000/newemps');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const result = await response.json();*/
+      const response2 = await fetch('https://my-repo-chi-coral.vercel.app/getemps');
+      if (!response2.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const result2 = await response2.json();
+      //console.log("RESULT",result);
+      console.log("RESULT2",result2);
+      const emps=['-- Select --'];
+      const l=['-- Select --'];
+      for (let emp of result2["data"]){
+        if (!l.includes(emp["lead_name"])) {
+            l.push(emp["lead_name"]);  // Add the string to the array if it's not already there
+        }
+        emps.push(emp["employee_name"]);
+       }
+       setEmployees(emps);
+       setLeads(l);
+    };
+
+    fetchData(); // Call the function to fetch data
+  }, []);
+
+
     return(
     <>
 <div id="page_header">
@@ -245,6 +396,7 @@ const Projects = () => {
   {addPRJ&&
       <form
         id="add-project-form"
+        onSubmit={(e)=>{add_new_project(e)}}
       >
         <div class="gap-4">
         <div class="flex flex-row">
@@ -252,54 +404,59 @@ const Projects = () => {
           <label id="col_label" class='flex justify-between'><span class="text-start">Project Name</span><span class="text-start">:</span></label>
           <input
             type="text"
-            name="project_name"
+            id="project_name"
             placeholder="Project Name"
             class="text_Input"
             required
           />
         </div>
         <div class='flex justify-between w-1/2 ml-2'>
-          <label id="col_label" class='flex justify-between'><span class="text-start">RAG Status</span><span class="text-start">:</span></label>
-          <select style={{width:'350px'}} name="rag_status" class="select_Dropdown_Input" required>
-            <option value="R">Red</option>
-            <option value="A">Amber</option>
-            <option value="G">Green</option>
-          </select>
+          <label id="col_label" class='flex justify-between'><span class="text-start">Customer Name</span><span class="text-start">:</span></label>
+          <input
+            type="text"
+            id="customer_name"
+            placeholder="Customer Name"
+            class="text_Input"
+            required
+          />
         </div>
         </div>
         <div class="flex flex-row">
         <div class='flex justify-between w-1/2'>
-          <label id="col_label" class='flex justify-between'><span class="text-start">Impediments</span><span class="text-start">:</span></label>
-          <textarea
-            type="text"
-            name="impediments"
-            placeholder="Impediments"
-            class="text_Input"
-            required
-          />
+          <label id="col_label" class='flex justify-between'><span class="text-start">Employee Name</span><span class="text-start">:</span></label>
+          <select class="select_Dropdown_Input" name="ResourceName" id="employee_name" style={{width:"350px"}}>
+                      {employees.map((resouce, index) => (
+            <option key={index} value={resouce}>
+              {resouce}
+            </option>
+          ))}
+          </select>
         </div>
         <div class='flex justify-between w-1/2  ml-2'>
-          <label id="col_label" class='flex justify-between'><span class="text-start">Resource</span><span class="text-start">:</span></label>
-          <textarea
-            type="text"
-            name="resource"
-            placeholder="Resource"
-            class="text_Input"
-            required
-          />
+          <label id="col_label" class='flex justify-between'><span class="text-start">Lead Name</span><span class="text-start">:</span></label>
+          <select class="select_Dropdown_Input" name="PracticeLead" id="lead_name" style={{width:"350px"}}>
+                      {leads.map((lead, index) => (
+            <option key={index} value={lead}>
+              {lead}
+            </option>
+          ))}
+                    </select>
         </div>
         </div>
         </div>
         <button type="submit" class="default_Button">Add</button>
       </form>}
       {!addPRJ&&<div class="mt-4 p-2">
-        <input type="file" id="upload-file" accept=".csv, .xlsx" />
-        <button id="upload-button" class="default_Button d-block">
+        <input type="file" id="upload-file" accept=".csv, .xlsx" onChange={handleFileChange}/>
+        <button id="upload-button" class="default_Button d-block" onClick={upload_new_project}>
           Upload
         </button>
       </div>}
     </div>
     </div>}
+    <div id="popup">
+        <span class="popuptext" id="myPopup"></span>
+    </div>
     </>
     );
 };

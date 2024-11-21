@@ -1,13 +1,62 @@
-import React, { useEffect } from 'react';
+import React, {useState, useEffect } from 'react';
+import * as XLSX from 'xlsx';
 
 const DESkilldivacker = () => {
+    const [uppopup, setuppopup] = useState(false);
+    const [exceldata, setExcelData] = useState([]);
+    const [employees, setEmployees] = useState(['-- Select --']);
+
+  // Function to handle file selection
+  const handleFileChange = (e) => {
+    const file = e.target.files[0]; // Get the first selected file
+    if (file) {
+      const fileExtension = file.name.split('.').pop().toLowerCase();
+      
+      // Call appropriate function depending on file type
+      if (fileExtension === 'csv') {
+        readCSV(file);
+      } else if (fileExtension === 'xlsx') {
+        readExcel(file);
+      } else {
+        alert('Please upload a .csv or .xlsx file');
+      }
+    }
+  };
+
+  // Function to read CSV file
+  const readCSV = (file) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const text = e.target.result; // File content as string
+      const rows = text.split('\n'); // Split the file into rows by newline
+      const data = rows.slice(1).map((row) => row.split(',')); // Skip the header (first row)
+      console.log("DATA",data);
+      setExcelData(data); // Save the data into state
+    };
+    reader.readAsText(file); // Read file as text (use this for .csv files)
+  };
+
+  // Function to read Excel (.xlsx) file
+  const readExcel = (file) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const data = e.target.result; // Raw binary data from file
+      const workbook = XLSX.read(data, { type: 'binary' });
+
+      // Get the first sheet from the Excel file
+      const sheetName = workbook.SheetNames[0];
+      const sheet = workbook.Sheets[sheetName];
+
+      // Convert sheet data to JSON (excluding header)
+      const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 }); // Get rows as array of arrays
+      const rows = jsonData.slice(1); // Exclude the header (first row)
+      console.log("DATA",rows);
+      setExcelData(rows); // Save the data into state
+    };
+    reader.readAsBinaryString(file); // Read file as binary for .xlsx files
+  };
     const expertice_levels = [
         '--Select--', 'None', 'Interested', 'Beginner', 'Intermediate/Advanced'
-    ]
-    const emp_ids = [
-        '-- Select --', '4733', '3840', '3295', '3171', '4859', '2640', '4701',
-        '4850', '5228', '5190', '4936', '4854', '4909', '2699', '5082', '4775',
-        '4393', '4862', '5189'
     ]
     const skills = [
         '-- Select --', 'Web Testing', 'Data Testing', 'Performance Testing',
@@ -47,7 +96,7 @@ const DESkilldivacker = () => {
     }
     function PopupFunction(divacker) {
       var popup = document.getElementById("myPopup");
-      popup.textContent = `${divacker} Form Submitted Successfully`;
+      popup.textContent = `${divacker}`;
         popup.classList.add('custom-background');
       //popup.classList.toggle("show");
       setTimeout(function () {
@@ -55,7 +104,35 @@ const DESkilldivacker = () => {
           popup.classList.remove('custom-background');
         }, 5000);
     }
-    function sendInput() {
+    const upload_new_project = async ()=>{
+        const data=[]
+    for (let emp of exceldata){
+      if (emp.length > 1) {
+        data.push({
+            "employee_id":emp[0],
+            "employee_name":emp[1],
+            "base_location":emp[2],
+            "skills":emp[3],
+            "expertise_level":emp[4],
+            "interest_for_up_skill": emp[5]
+            });
+      }
+     }
+        const response = await fetch('https://my-repo-chi-coral.vercel.app/inserttoskills', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data), // Data to send in the POST request
+        });
+        if (!response.ok) {
+                throw new Error('Network response was not ok');
+        }
+        const result = await response.json();
+        console.log("Result",result);
+        PopupFunction("Skill Tracker Uploaded Successfully");
+      }
+    async function sendInput() {
         let divacker ="Skill divacker"
          let selectElement =document.getElementById("DynamicFilter3");
          let emp_id =selectElement.options[selectElement.selectedIndex].textContent;
@@ -77,22 +154,39 @@ const DESkilldivacker = () => {
           document.getElementById('expertise_level_alert').textContent = "*Please Select Expertise Level";
          }
          if(flag){
-          /*fetch("https://37727f4f-9aca-4f3e-a138-f54e7c36574d-00-27qjdf76eegx8.sisko.replit.dev/gip", {
+            const response2 = await fetch('https://my-repo-chi-coral.vercel.app/getemps');
+            if (!response2.ok) {
+              throw new Error('Network response was not ok');
+            }
+            const result2 = await response2.json();
+            //console.log("RESULT",result);
+            console.log("RESULT2",result2);
+            let emp_name=[];
+            let base_location=[];
+            for (let emp of result2["data"]){
+              if (emp["employee_no"]==emp_id) {
+                  emp_name=emp["employee_name"]
+                  base_location=emp["current_city"]
+              }
+             }
+          fetch("https://my-repo-chi-coral.vercel.app/inserttoskills", {
           method: "POST",
-          body: JSON.sdivingify({
-          "Employee_ID":emp_id,
-          "Skill":skill,
-          "Expertise_Level":expertise_level,
-          "Interest_for_Up_Skill": int_up_skill
-          }),
+          body: JSON.stringify([{
+          "employee_id":emp_id,
+          "employee_name":emp_name,
+          "base_location":base_location,
+          "skills":skill,
+          "expertise_level":expertise_level,
+          "interest_for_up_skill": int_up_skill
+          }]),
           headers: {
            "Content-type": "application/json; charset=UTF-8"
           }
           })
           .then((response) => response.json())
-          .then((json) => console.log(json));*/
+          .then((json) => console.log(json));
 
-          PopupFunction(divacker);
+          PopupFunction("Skill Tracker Uploaded Successfully");
              //selectElement.value=divacker;
               // getChoosedivacker();
          }
@@ -101,7 +195,30 @@ const DESkilldivacker = () => {
          }
     }
 
-
+    useEffect(() => {
+        const fetchData = async () => {
+    
+          /*const response = await fetch('http://127.0.0.1:5000/newemps');
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const result = await response.json();*/
+          const response2 = await fetch('https://my-repo-chi-coral.vercel.app/getemps');
+          if (!response2.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const result2 = await response2.json();
+          //console.log("RESULT",result);
+          console.log("RESULT2",result2);
+          const emps=['-- Select --'];
+          for (let emp of result2["data"]){
+            emps.push(emp["employee_no"]);
+           }
+           setEmployees(emps);
+        };
+    
+        fetchData(); // Call the function to fetch data
+      }, []);
 
     return(
         <>
@@ -115,7 +232,7 @@ const DESkilldivacker = () => {
               <label id="col_label" class='flex justify-between'><span class="text-start">Employee ID*</span><span class="text-start">:</span></label>
               <span>
                   <select class="select_Dropdown_Input" onChange={getdynamicFilter3} name="DynamicFilter3" id="DynamicFilter3">
-                {emp_ids.map((emp_id, index) => (
+                {employees.map((emp_id, index) => (
                     <option key={index} value={emp_id}>
                       {emp_id}
                     </option>
@@ -163,14 +280,29 @@ const DESkilldivacker = () => {
         <button class="default_Button" id="Submit_Button" onClick={sendInput}>
             Submit
         </button>
+        <button class="default_Button" onClick={()=>{setuppopup(true)}}>
+            Upload
+        </button>
         <label id="alert"></label>
         </div>
     </div>
     <div id="popup">
         <span class="popuptext" id="myPopup"></span>
     </div>
-</div>
-        </>
+    </div>
+    {uppopup&&
+    <div id='add_project_popup'>
+    <button onClick={()=>{setuppopup(false)}} style={{color:'gray',marginLeft:'1000px'}}>x</button>
+    <div id="sub_page_box" style={{height:'200px'}}>
+    <div class="mt-4 p-2">
+        <input type="file" id="upload-file" accept=".csv, .xlsx" onChange={handleFileChange}/>
+        <button id="upload-button" class="default_Button d-block" onClick={upload_new_project}>
+          Upload
+        </button>
+      </div>
+    </div>
+    </div>}
+    </>
     );
 };
 
