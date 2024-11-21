@@ -70,7 +70,7 @@ const About_Us = () => {
         //alert("Your request has been placed successfully!");
 
         //return true;
-        fetch("http://127.0.0.1:5000/inserttoai", {
+        fetch("https://my-repo-chi-coral.vercel.app/inserttoai", {
           method: "POST",
           body: JSON.stringify([{
           "action_item_type":"Request",

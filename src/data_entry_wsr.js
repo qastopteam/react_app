@@ -175,7 +175,7 @@ const DataEndivyWSR = () => {
           }
          }
         console.log("DATA",data);
-        const response = await fetch('http://127.0.0.1:5000/inserttowsr', {
+        const response = await fetch('https://my-repo-chi-coral.vercel.app/inserttowsr', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -245,7 +245,7 @@ const DataEndivyWSR = () => {
                 emp_id=emp["employee_no"]
             }
            }
-          fetch("http://127.0.0.1:5000/inserttowsr", {
+          fetch("https://my-repo-chi-coral.vercel.app/inserttowsr", {
           method: "POST",
           body: JSON.stringify([{
           "employee_id":emp_id,
@@ -290,7 +290,7 @@ const DataEndivyWSR = () => {
             throw new Error('Network response was not ok');
           }
           const result = await response.json();*/
-          const response2 = await fetch('http://127.0.0.1:5000/getproj');
+          const response2 = await fetch('https://my-repo-chi-coral.vercel.app/getproj');
           if (!response2.ok) {
             throw new Error('Network response was not ok');
           }
