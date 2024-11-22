@@ -8,6 +8,8 @@ const Projects = () => {
   const [exceldata, setData] = useState([]);
   const [employees, setEmployees] = useState(['-- Select --']);
     const [leads, setLeads] = useState(['-- Select --']);
+    const [ragStatus, setRAGStatus] = useState(false);
+    const [ragTable, setRAGTable] = useState([]);
 
   // Function to handle file selection
   const handleFileChange = (e) => {
@@ -170,6 +172,13 @@ const Projects = () => {
         }
         emps.push(emp["employee_name"]);
        }
+
+       const response3 = await fetch('https://my-repo-chi-coral.vercel.app/getwsr');
+      if (!response3.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const result3 = await response3.json();
+      setRAGTable(result3["data"])
        setEmployees(emps);
        setLeads(l);
     };
@@ -241,16 +250,25 @@ const Projects = () => {
   </div>
   <div>
     <div class="flex justify-between bg-gray-400 p-2 rounded-lg">
-      <div class="w-1/5 text-left font-bold">Project</div>
-      <div class="w-1/5 text-left font-bold">RAG Status</div>
-      <div class="w-1/5 text-left font-bold">Impediments</div>
-      <div class="w-1/5 text-left font-bold">Resource</div>
-      <div class="w-1/5 text-left font-bold">Actions</div>
+      <div class="w-1/4 text-left font-bold">Project</div>
+      <div class="w-1/4 text-left font-bold">RAG Status</div>
+      <div class="w-1/4 text-left font-bold">Impediments</div>
+      <div class="w-1/4 text-left font-bold">Resource</div>
     </div>
     <div id="results" class="mt-4 w-full">
-      <p class="text-center">
+      {!ragTable&&<p class="text-center">
         Please select a RAG status to display the tabular report.
-      </p>
+      </p>}
+      
+        {ragTable.map((rag, index) => (
+          <div class="flex justify-between bg-white p-2 rounded-lg mt-2 border border-gray-300">
+                            <div class="w-1/4 text-left break-words">{rag["project_name"]}</div>
+                            <div class="w-1/4 text-left break-words">{rag["rag_status"]}</div>
+                            <div class="w-1/4 text-left break-words">{rag["impediments"]}</div>
+                            <div class="w-1/4 text-left break-words">{rag["resource_name"]}</div>
+                            </div>
+                             ))}  
+      
     </div>
     <div id="pagination-controls" class="flex justify-center mt-4">
       <button

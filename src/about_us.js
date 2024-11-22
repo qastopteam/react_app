@@ -51,7 +51,8 @@ const About_Us = () => {
       }
 
     // Function to validate form fields and show success message
-    function validateForm() {
+    function validateForm(e) {
+        e.preventDefault();
         var description = document.getElementById("description").value;
         var empName = document.getElementById("emp_name").value;
         var clName = document.getElementById("client_name").value;

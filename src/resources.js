@@ -1,7 +1,8 @@
 import React, {useState, useEffect } from 'react';
 
 const Resources = () => {
-    const employees = [
+    const [employees, setEmployees] = useState([]);
+    /*const employees = [
         {
             name: "Aarti Kyama",
             webTesting: "Intermediate/Advanced",
@@ -142,7 +143,7 @@ const Resources = () => {
             performanceTesting: "None",
             baseLocation: "Hyderabad",
         },
-    ];
+    ];*/
 
     const itemsPerPage = 5;
     let currentPage = 1;
@@ -239,11 +240,62 @@ const Resources = () => {
         );
     }
 
-    useEffect(() => {
+
+      useEffect(() => {
+        const fetchData = async () => {
+    
+          /*const response = await fetch('http://127.0.0.1:5000/newemps');
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const result = await response.json();*/
+          const response2 = await fetch('https://my-repo-chi-coral.vercel.app/getskills');
+          if (!response2.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const result2 = await response2.json();
+          //console.log("RESULT",result);
+          console.log("RESULT2",result2);
+          const emps=[];
+          for (let emp of result2["data"]){
+            if(emp["skills"]=="Web Testing"){
+                emps.push({
+                    name:emp["employee_name"],
+                    webTesting: emp["expertise_level"],
+                    dataTesting: "None",
+                    performanceTesting: "None",
+                    baseLocation: emp["base_location"]
+                })
+            }
+            else if(emp["skills"]=="Performance Testing"){
+                emps.push({
+                    name:emp["employee_name"],
+                    webTesting: "None",
+                    dataTesting: "None",
+                    performanceTesting: emp["expertise_level"],
+                    baseLocation: emp["base_location"]
+                })
+            }
+            else {
+                emps.push({
+                    name:emp["employee_name"],
+                    webTesting: "None",
+                    dataTesting: emp["expertise_level"],
+                    performanceTesting: "None",
+                    baseLocation: emp["base_location"]
+                })
+            }
+        };
+           
+           
+           setEmployees(emps);
+        };
+    
+        fetchData(); // Call the function to fetch data
         enableExpertiseDropdown();
         renderTable();
         renderPagination();
-      },[]);
+      }, []);
 
     return(
      <>
