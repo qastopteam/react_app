@@ -18,7 +18,7 @@
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background-color: #F1B716; /* bg-gray-700 equivalent */
+    background-color: #EA9C27; /* bg-gray-700 equivalent */
     color: white;
     padding: 10px;
     border-radius: 50%;
@@ -37,7 +37,7 @@
 }
 
 .chatbot-header {
-    background-color: #F1B716; /* bg-gray-700 equivalent */
+    background-color: #EA9C27; /* bg-gray-700 equivalent */
     color: white;
     padding: 10px;
     border-top-left-radius: 10px;
@@ -76,7 +76,7 @@
 }
 
 .send-button {
-    background-color: #F1B716; /* bg-gray-900 equivalent */
+    background-color: #EA9C27; /* bg-gray-900 equivalent */
     color: white;
     border: none;
     padding: 10px;
@@ -100,11 +100,11 @@
 }
 
 .bot-message {
-    background-color: #F1B716; /* bg-orange-700 equivalent */
+    background-color: #EA9C27; /* bg-orange-700 equivalent */
     color:white;
 }
 .option-button {
-    background-color: #F1B716; /* Light orange for option buttons */
+    background-color: #EA9C27; /* Light orange for option buttons */
     margin: 5px 0; /* Margin for spacing between option buttons */
     cursor: pointer;
     text-align: center;
@@ -276,18 +276,18 @@
 
 #page-link:hover { /* Equivalent to 'bg-orange-500' */
     text-decoration: underline;
-    text-decoration-color: #F1B716;
+    text-decoration-color: #EA9C27;
     color: white;
 }
 .highlight {
-    color: #F1B716;
+    color: #EA9C27;
     text-decoration: none; /* Highlight color */
     /*border: 1px solid #388E3C;  Darker border for highlighted */
 }
 
 #page-link.highlight:hover { /* Equivalent to 'bg-orange-500' */
     text-decoration: none;
-    color: #F1B716;
+    color: #EA9C27;
 }
 .non-highlight {
     color: white; /* Highlight color */
@@ -310,7 +310,7 @@
 .default_Button{
       margin-top: 0.5rem; /* mt-2: Tailwind's margin-top of 0.5rem */
       padding: 0.5rem; /* p-2: Tailwind's padding of 0.5rem */
-      background-color: #F1B716; /* bg-orange-700: Tailwind's background color for orange-700 */
+      background-color: #EA9C27; /*EA9C27 bg-orange-700: Tailwind's background color for orange-700 */
       color: #ffffff; /* text-white: Tailwind's text color for white */
       border-radius: 0.25rem; /* rounded: Tailwind's border-radius of 0.25rem */
 }
@@ -406,8 +406,6 @@ body{
     display: inline-block;
     cursor: pointer;
     z-index: 1;
-    left: 200px;
-    top: -200px;
     color: black;
     font-size: 20px;
     font-weight: 500;
@@ -509,7 +507,7 @@ body{
     max-width: 300px;
 }
 #col_label {
-    min-width: 150px;
+    min-width: 135px;
     text-align: left;
 }
 
@@ -750,10 +748,10 @@ textarea::placeholder {
 }
 #add_projects_btn{
     margin-left: 900px; /* p-2: Tailwind's padding of 0.5rem */
-      background-color: #F1B716; /* bg-orange-700: Tailwind's background color for orange-700 */ /* text-white: Tailwind's text color for white */
+      background-color: whitesmoke; /* bg-orange-700: Tailwind's background color for orange-700 */ /* text-white: Tailwind's text color for white */
       border-radius: 0.25rem;
-      padding: 5px;
-      color: white;
+      padding: 4px;
+      color: gray;
 }
 #add_project_popup{
     background-color: whitesmoke;
@@ -761,14 +759,13 @@ textarea::placeholder {
     display: inline-block;
     cursor: pointer;
     z-index: 1;
-    left: 225px;
+    left: 200px;
     top: 100px;
     color: black;
     font-size: 20px;
     font-weight: 500;
     border-radius: 5px;
     padding: 10px;
-    width: 1100px;
 }
 #add_project_popup_btn{
       background-color: whitesmoke; /* bg-orange-700: Tailwind's background color for orange-700 */ /* text-white: Tailwind's text color for white */
@@ -781,3 +778,89 @@ textarea::placeholder {
 #add_project_popup_btn.selected{
     background-color: white;
 }
+#logout_popup{
+    background-color: white;
+    position: fixed;
+    display: inline-block;
+    z-index: 1;
+    left: 1050px;
+    top: 1px;
+    color: black;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: small;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    text-align: left;
+    width: 290px;
+}
+#logout_button{
+    border-radius: 10px;
+    padding: 5px;
+    background-color: whitesmoke;
+    margin-left: 100px;
+    margin-bottom: 20px;
+}
+#project_popup{
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    z-index: 1;
+    left: 200px;
+    top: 70px;
+    color: black;
+    font-size: 20px;
+    font-weight: 500;
+    border-radius: 5px;
+    padding: 10px;
+    width: 1125px;
+    height: 600px;
+    align-items: center;
+}
+#GLoginPage{
+    width: 1358px;
+    height: 652px;
+    background-size: cover;
+    background-image: url('./bg-image.jpg');
+}
+#GLoginPageBox{
+    width:300px;
+    color: white;
+    position: fixed;
+    left:800px;
+    top:200px;
+}
+#loading_popup{
+    background-color: rgba(0, 0, 0, 0.1);
+    position: fixed;
+    z-index: 1;
+    left: 10px;
+    top: 10px;
+    color: black;
+    font-size: 20px;
+    font-weight: 500;
+    border-radius: 5px;
+    padding: 10px;
+    width: 1358px;
+    height: 652px;
+    display: flex;
+    justify-content: center;  /* Centers horizontally */
+    align-items: center;      /* Centers vertically */
+}
+.hover-text {
+    display: block;
+    position: absolute;
+  bottom: 120%; /* Position above the button */
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 5px 10px;
+  background-color: #f1f1f1;
+  color: #333;
+  border-radius: 5px;
+  font-size: 14px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s;
+  }
+  
+  .hover-btn:hover .hover-text {
+    opacity: 1;
+  }

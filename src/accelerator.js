@@ -1,10 +1,42 @@
 import React, { useState, useEffect } from 'react';
+import * as XLSX from 'xlsx';
+import { AiOutlineDownload } from "react-icons/ai";
 
-const Accelerator = () => {
+const Accelerator = (props) => {
   const [data, setData] = useState("");
+  const [filteredData, setFilteredData] = useState("");
+  const [addNewAccelerator, setAddNewAccelerator] = useState(false);
+  const [SPOC, setSPOC] = useState(['--Select--']);
+  const Catagory=['--Select--','Data comparator','excel comparator','web comparator'];
     const itemsPerPage = 5; // Number of items per page
     let currentPage = 1;
+
+    const handleExcelDownload = () => {
+      // Get the table element
+      console.log("ExcelDATA",filteredData);
+      const table = document.getElementById('tableToExport');
+      
+      // Convert the table to a workbook
+      const wb = XLSX.utils.table_to_book(table, { sheet: 'Accelerators' });
   
+      // Write the workbook and trigger download
+      XLSX.writeFile(wb, 'Accelerators_Data.xlsx');
+    };
+    function enableAddAcceleratorPopup() {
+      if(addNewAccelerator===false){
+        setAddNewAccelerator(true);
+      }
+      else{
+        setAddNewAccelerator(false);
+      }
+    }
+    function AlertFunc() {
+      document.getElementById('alert').textContent = "Please Fill the Mandatory Fields(*)";
+      setTimeout(function () {
+          document.getElementById('alert').textContent = "";
+      }, 5000);
+      //$('#GFG').text("Div hides after 1 second.");
+  }
     const renderResults = (filteredLinks) => {
       let results = ``;
       const start = (currentPage - 1) * itemsPerPage;
@@ -47,7 +79,8 @@ const Accelerator = () => {
             link.Category.toLowerCase().includes(searchTerm),
         );
       }
-  
+
+      setFilteredData(filteredLinks)
       return filteredLinks;
     };
   
@@ -66,12 +99,67 @@ const Accelerator = () => {
       currentPage = pageNumber;
       renderResults(getFilteredLinks());
     };
-    
+    function PopupFunction(divacker) {
+      var popup = document.getElementById("myPopup");
+      popup.textContent = `${divacker}`;
+        popup.classList.add('custom-background');
+        const chatbot = document.getElementById("loading_popup");
+          chatbot.classList.toggle("hidden");
+      //popup.classList.toggle("show");
+      setTimeout(function () {
+            popup.textContent = "";
+          popup.classList.remove('custom-background');
+          chatbot.classList.toggle("hidden");
+        }, 5000);
+    }
+    async function sendInput() {
+      props.setLoad(true);
+      let accelerator_name =document.getElementById("accelerator_name").value;
+      let category =document.getElementById("Category").value;
+      let spoc =document.getElementById("spoc").value;
+      let reference =document.getElementById("reference").value;
+      let flag=true;
+      if(accelerator_name=="-- Select --"){
+       flag=false;
+      }
+      if(category=="-- Select --"){
+       flag=false;
+      }
+      if(spoc=="-- Select --"){
+       flag=false;
+      }
+      if(flag){
+       fetch("https://my-repo-chi-coral.vercel.app/inserttoacc", {
+       method: "POST",
+       body: JSON.stringify([{
+       "accelerator":accelerator_name,
+       "category":category,
+       "spoc":spoc,
+       "link":reference,
+       "employee_no":804727
+       }]),
+       headers: {
+        "Content-type": "application/json; charset=UTF-8"
+       }
+       })
+       .then((response) => response.json())
+       .then((json) => console.log(json));
+
+       PopupFunction("New Accelerator Added Successfully");
+       setAddNewAccelerator(false);
+          //selectElement.value=divacker;
+           // getChoosedivacker();
+      }
+      else{
+      AlertFunc();
+      }
+      props.setLoad(false);
+ }
 
 
       useEffect(() => {
         const fetchData = async () => {
-
+          props.setLoad(true);
           /*const response = await fetch('http://127.0.0.1:5000//accs');
           if (!response.ok) {
             throw new Error('Network response was not ok');
@@ -87,7 +175,9 @@ const Accelerator = () => {
           const Comp1=[];
           const Comp2=[];
           const Comp3=[];
+          const spoc=['--Select--'];
           result2["data"].forEach((item) => {
+            spoc.push(item["spoc"]);
             if(item["category"]==="Data comparator"){
               Comp1.push({
                 Accelerator: item["accelerator"],
@@ -119,7 +209,9 @@ const Accelerator = () => {
           const DBData={Comparator1:Comp1,Comparator2:Comp2,Comparator3:Comp3};
           console.log("DBData",DBData)
           setData(DBData); // Store the fetched data in state
+          setSPOC(spoc);
           renderResults(Object.values(DBData).flat());
+          props.setLoad(false);
         };
     
         fetchData(); // Call the function to fetch data
@@ -129,7 +221,9 @@ const Accelerator = () => {
     return (  
         <>
         <div id="page_header">
-  <h1>Accelerators</h1>
+  <h1><span>Accelerators</span>
+    {props.auth&&<button id="add_projects_btn" onClick={enableAddAcceleratorPopup}>+Add</button>}
+  </h1>
 </div>
 <div>
   <div class="flex gap-4 p-2">
@@ -203,10 +297,14 @@ const Accelerator = () => {
             renderResults(getFilteredLinks());
           }}
         />
+    <button class="hover-btn" style={{marginLeft:'10px'}}  onClick={handleExcelDownload}>
+      <AiOutlineDownload style={{width:'20px',height:'20px'}}/>
+      <span class="hover-text">Download</span>
+    </button>
       </div>
     </div>
     
-      <div class="flex justify-between bg-gray-400 p-2 rounded-top">
+      <div class="flex justify-between bg-orange-300 p-2 rounded-top">
         <div class="w-1/4 text-left font-bold">Category</div>
         <div class="w-1/4 text-left font-bold">Accelerator name</div>
         <div class="w-1/4 text-left font-bold">SPOC</div>
@@ -236,6 +334,81 @@ const Accelerator = () => {
     </div>
   </div>
 </div>
+{addNewAccelerator&&
+  <div id="project_popup">
+  <div id='add_project_popup' style={{marginLeft:'250px',marginTop:'50px',padding:"30px"}}>
+    <div>
+      <label id="add_table_label" style={{width:'300px',fontWeight:"bold"}}>Add New Resource</label>
+      <button onClick={()=>{setAddNewAccelerator(false)}} style={{color:'gray',marginLeft:'220px'}}>x</button>
+    </div>
+    <div class='filters'>
+              <label id="col_label" class='flex justify-between'><span class="text-start">Accelerator*</span><span class="text-start">:</span></label>
+              <span>
+                  <input class="text_Input" type="text" id="accelerator_name" placeholder="Accelerator Name" />
+              </span>
+    </div>
+    <div class='filters'>
+              <label id="col_label" class='flex justify-between'><span class="text-start">Category*</span><span class="text-start">:</span></label>
+              <span id="skl">
+                  <select class="select_Dropdown_Input" name="Category" id="Category" style={{width:'350px'}}>
+                    {Catagory.map((ct, index) => (
+                    <option key={index} value={ct}>
+                      {ct}
+                    </option>
+                  ))}
+                  </select>
+              </span>
+    </div>
+    <div class='filters'>
+              <label id="col_label" class='flex justify-between'><span class="text-start">SPOC*</span><span class="text-start">:</span></label>
+              <span id="skl">
+                  <select class="select_Dropdown_Input" name="spoc" id="spoc" style={{width:'350px'}}>
+                    {SPOC.map((spoc, index) => (
+                    <option key={index} value={spoc}>
+                      {spoc}
+                    </option>
+                  ))}
+                  </select>
+              </span>
+    </div>
+    <div class='filters'>
+              <label id="col_label" class='flex justify-between'><span class="text-start">Reference*</span><span class="text-start">:</span></label>
+              <span>
+                  <textarea class="text_Input" type="text" id="reference" placeholder="Reference" />
+              </span>
+    </div>
+    <button class="default_Button" onClick={sendInput}>
+            Submit
+    </button>
+    <label id="alert"></label>
+  </div>
+  </div>
+  }
+  <div id="loading_popup" class='hidden'>
+  <div id="popup">
+        <span class="popuptext" id="myPopup"></span>
+    </div>
+    </div>
+    {filteredData&&<table id="tableToExport" className='hidden'>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Accelerator Name</th>
+            <th>SPOC</th>
+            <th>Reference</th>
+          </tr>
+        </thead>
+        <tbody>
+        {filteredData.map((row, index) => (
+            <tr key={index}>
+              <td>{row.Category}</td>
+              <td>{row.Accelerator}</td>
+              <td>{row.SPOC}</td>
+              <td>{row.Direct}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>}
         </>
     );
 };

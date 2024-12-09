@@ -1,6 +1,8 @@
 import React, {useState, useEffect } from 'react';
+import { ClipLoader,BeatLoader,BounceLoader } from 'react-spinners';
+import ReactLoading from 'react-loading';
 
-const About_Us = () => {
+const About_Us = (props) => {
     const [employees, setEmployees] = useState(['-- Select --']);
     const [employeeNames, setEmployeeNames] = useState(['-- Select --']);
     const request_types = ['-- Select --', 'Accelerator', 'Support'];
@@ -43,15 +45,19 @@ const About_Us = () => {
         var popup = document.getElementById("myPopup");
         popup.textContent = `${Tracker}`;
           popup.classList.add('custom-background');
+        const chatbot = document.getElementById("loading_popup");
+          chatbot.classList.toggle("hidden");
         //popup.classList.toggle("show");
         setTimeout(function () {
               popup.textContent = "";
             popup.classList.remove('custom-background');
+            chatbot.classList.toggle("hidden");
           }, 5000);
       }
 
     // Function to validate form fields and show success message
     function validateForm(e) {
+        props.setLoad(true);
         e.preventDefault();
         var description = document.getElementById("description").value;
         var empName = document.getElementById("emp_name").value;
@@ -90,7 +96,7 @@ const About_Us = () => {
           })
           .then((response) => response.json())
           .then((json) => console.log(json));
-
+          props.setLoad(false);
           PopupFunction("Request Submitted Successfully");
     }
 
@@ -111,6 +117,7 @@ const About_Us = () => {
 
       useEffect(() => {
         const fetchData = async () => {
+            props.setLoad(true);
 
           /*const response = await fetch('http://127.0.0.1:5000/newemps');
           if (!response.ok) {
@@ -136,6 +143,7 @@ const About_Us = () => {
            }
            setEmployees(emps);
            setEmployeeNames(emp_names);
+           props.setLoad(false);
         };
     
         fetchData(); // Call the function to fetch data
@@ -282,8 +290,10 @@ const About_Us = () => {
             </section>
         </main>
     </div>
+    <div id="loading_popup" class='hidden'>
     <div id="popup">
         <span class="popuptext" id="myPopup"></span>
+    </div>
     </div>
     </>
   );

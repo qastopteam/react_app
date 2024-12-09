@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Bar } from 'react-chartjs-2';
+import html2pdf from 'html2pdf.js';
+import { IoPrintSharp } from "react-icons/io5";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 
 // Register the necessary components
@@ -11,6 +13,15 @@ const Governance = () => {
 const [sdata, setsdata] = useState();
 const [sopt, setsopt] = useState();
 
+const downloadPDF = () => {
+    // Target the div with the content to be converted into PDF
+    const element = document.getElementById("page_content");
+    
+    // Generate the PDF from the content
+    html2pdf()
+      .from(element) // Specify the element to convert
+      .save("Governance.pdf"); // Specify the PDF file name
+  };
 
     var projectsData = {
         labels: [
@@ -546,9 +557,13 @@ useEffect(() => {
 
 
     return(
-<>
+<div id='page_content'>
 <div id="page_header">
   <h1>Governance</h1>
+  <button class="hover-btn" style={{marginLeft:'900px'}} onClick={downloadPDF}>
+    <IoPrintSharp />
+    <span class="hover-text">Print</span>
+</button>
 </div>
 <div class="flex flex-row gap-2 p-2">
 <div id="sub_page_box" class="gap-4 w-1/2">
@@ -682,7 +697,7 @@ useEffect(() => {
             </div>
         </div>
     </div>
-</>
+</div>
     );
 };
 

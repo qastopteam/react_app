@@ -1,7 +1,7 @@
 import React, {useState, useEffect } from 'react';
 import * as XLSX from 'xlsx';
 
-const DESkilldivacker = () => {
+const DESkilldivacker = (props) => {
     const [uppopup, setuppopup] = useState(false);
     const [exceldata, setExcelData] = useState([]);
     const [employees, setEmployees] = useState(['-- Select --']);
@@ -98,13 +98,17 @@ const DESkilldivacker = () => {
       var popup = document.getElementById("myPopup");
       popup.textContent = `${divacker}`;
         popup.classList.add('custom-background');
+        const end_popup = document.getElementById("loading_popup");
+        end_popup.classList.toggle("hidden");
       //popup.classList.toggle("show");
       setTimeout(function () {
             popup.textContent = "";
           popup.classList.remove('custom-background');
+          end_popup.classList.toggle("hidden");
         }, 5000);
     }
     const upload_new_project = async ()=>{
+      props.setLoad(true);
         const data=[]
     for (let emp of exceldata){
       if (emp.length > 1) {
@@ -131,8 +135,10 @@ const DESkilldivacker = () => {
         const result = await response.json();
         console.log("Result",result);
         PopupFunction("Skill Tracker Uploaded Successfully");
+        props.setLoad(false);
       }
     async function sendInput() {
+      props.setLoad(true);
         let divacker ="Skill divacker"
          let selectElement =document.getElementById("DynamicFilter3");
          let emp_id =selectElement.options[selectElement.selectedIndex].textContent;
@@ -187,16 +193,22 @@ const DESkilldivacker = () => {
           .then((json) => console.log(json));
 
           PopupFunction("Skill Tracker Uploaded Successfully");
+          document.getElementById("DynamicFilter3").value="-- Select --";
+          document.getElementById("DynamicFilter4").value="-- Select --";
+          document.getElementById("ExpertiseLevel").value="--Select--";
+          document.getElementById("IntUpSkill").value="-- Select --";
              //selectElement.value=divacker;
               // getChoosedivacker();
          }
          else{
          AlertFunc();
          }
+         props.setLoad(false);
     }
 
     useEffect(() => {
         const fetchData = async () => {
+          props.setLoad(true);
     
           /*const response = await fetch('http://127.0.0.1:5000/newemps');
           if (!response.ok) {
@@ -215,6 +227,7 @@ const DESkilldivacker = () => {
             emps.push(emp["employee_no"]);
            }
            setEmployees(emps);
+           props.setLoad(false);
         };
     
         fetchData(); // Call the function to fetch data
@@ -277,7 +290,7 @@ const DESkilldivacker = () => {
                 </select>
             </span>
         </div>
-        <button class="default_Button" id="Submit_Button" onClick={sendInput}>
+        <button class="default_Button" style={{marginLeft:'10px',marginRight:'20px'}} onClick={sendInput}>
             Submit
         </button>
         <button class="default_Button" onClick={()=>{setuppopup(true)}}>
@@ -286,14 +299,16 @@ const DESkilldivacker = () => {
         <label id="alert"></label>
         </div>
     </div>
+    <div id="loading_popup" class='hidden'>
     <div id="popup">
         <span class="popuptext" id="myPopup"></span>
     </div>
     </div>
+    </div>
     {uppopup&&
-    <div id='add_project_popup'>
-    <button onClick={()=>{setuppopup(false)}} style={{color:'gray',marginLeft:'1000px'}}>x</button>
-    <div id="sub_page_box" style={{height:'200px'}}>
+    <div id="loading_popup">
+    <div id="sub_page_box" style={{height:'200px',marginLeft:'100px'}}>
+    <button onClick={()=>{setuppopup(false)}} style={{color:'gray',marginLeft:'800px'}}>x</button>
     <div class="mt-4 p-2">
         <input type="file" id="upload-file" accept=".csv, .xlsx" onChange={handleFileChange}/>
         <button id="upload-button" class="default_Button d-block" onClick={upload_new_project}>

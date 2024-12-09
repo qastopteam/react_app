@@ -1,6 +1,6 @@
 import React, {useState, useEffect } from 'react';
 
-const DELeaveTracker = () => {
+const DELeaveTracker = (props) => {
     const [employees, setEmployees] = useState([]);
     const [employeeNames, setEmployeeNames] = useState(['-- Select --']);
     const [leads, setLeads] = useState(['-- Select --']);
@@ -69,13 +69,18 @@ const DELeaveTracker = () => {
       var popup = document.getElementById("myPopup");
       popup.textContent = `${Tracker}`;
         popup.classList.add('custom-background');
+        const end_popup = document.getElementById("loading_popup");
+        end_popup.classList.toggle("hidden");
+      //popup.classList.toggle("show");
       //popup.classList.toggle("show");
       setTimeout(function () {
             popup.textContent = "";
           popup.classList.remove('custom-background');
+          end_popup.classList.toggle("hidden");
         }, 5000);
     }
     function sendInput() {
+      props.setLoad(true);
         let Tracker ="Leave Tracker"
          let selectElement =document.getElementById("PracticeLead");
          let practice_lead =selectElement.options[selectElement.selectedIndex].textContent;
@@ -117,16 +122,24 @@ const DELeaveTracker = () => {
           .then((json) => console.log(json));
 
           PopupFunction("Leave Request Submitted Successfully");
+          document.getElementById("PracticeLead").value="-- Select --";
+          document.getElementById("ResourceName").value="-- Select --";
+          document.getElementById("LeaveType").value="-- Select --";
+          document.getElementById("StartDate").value="";
+          document.getElementById("EndDate").value="";
+          document.getElementById('total_working_days').textContent="0";
           //selectElement.value=Tracker;
           //getChooseTracker();
          }
          else{
          AlertFunc();
          }
+         props.setLoad(false);
     }
 
     useEffect(() => {
         const fetchData = async () => {
+          props.setLoad(true);
 
           /*const response = await fetch('http://127.0.0.1:5000/newemps');
           if (!response.ok) {
@@ -157,7 +170,8 @@ const DELeaveTracker = () => {
            }
            setEmployees(emps);
            setLeads(l);
-           setEmployeeNames(empNames)
+           setEmployeeNames(empNames);
+           props.setLoad(false);
         };
     
         fetchData(); // Call the function to fetch data
@@ -219,13 +233,15 @@ const DELeaveTracker = () => {
             <label id="col_label" class='flex justify-between'><span class="text-start">Total Working Days</span><span class="text-start">:</span></label>
             <span id="total_working_days">0</span>
         </div>
-        <button class="default_Button" id="Submit_Button" onClick={sendInput}>
+        <button class="default_Button" onClick={sendInput}>
             Submit
         </button>
         <label id="alert"></label>
     </div>
+    <div id="loading_popup" class='hidden'>
     <div id="popup">
         <span class="popuptext" id="myPopup"></span>
+    </div>
     </div>
 </div>
         </>

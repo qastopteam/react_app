@@ -1,8 +1,11 @@
 import React, {useState, useEffect } from 'react';
 import * as XLSX from 'xlsx';
+import { Pie } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 
-const Projects = () => {
+const Projects = (props) => {
   const [addNewProject, setAddNewProject] = useState(false);
   const [addPRJ, setAddPRJ] = useState(true);
   const [exceldata, setData] = useState([]);
@@ -10,6 +13,23 @@ const Projects = () => {
     const [leads, setLeads] = useState(['-- Select --']);
     const [ragStatus, setRAGStatus] = useState(false);
     const [ragTable, setRAGTable] = useState([]);
+    const [pieChartData, setPieChartData] = useState();
+
+    const pieChartDataOptions = {
+      responsive: true, // Make the chart responsive
+      plugins: {
+        legend: {
+          position: 'top', // Position of the legend
+        },
+        tooltip: {
+          callbacks: {
+            label: function (tooltipItem) {
+              return tooltipItem.label + ': ' + tooltipItem.raw; // Custom tooltip format
+            },
+          },
+        },
+      },
+    };
 
   // Function to handle file selection
   const handleFileChange = (e) => {
@@ -64,13 +84,17 @@ const Projects = () => {
     var popup = document.getElementById("myPopup");
     popup.textContent = `Project Added Successfully`;
       popup.classList.add('custom-background');
+      const end_popup = document.getElementById("loading_popup");
+      end_popup.classList.toggle("hidden");
     //popup.classList.toggle("show");
     setTimeout(function () {
           popup.textContent = "";
         popup.classList.remove('custom-background');
+        end_popup.classList.toggle("hidden");
       }, 5000);
   }
   const add_new_project = async (e)=>{
+    props.setLoad(true);
     e.preventDefault();
     let project = document.getElementById("project_name").value;
     let customer = document.getElementById("customer_name").value;
@@ -95,8 +119,10 @@ const Projects = () => {
     document.getElementById('employee_name').value = '-- Select --';
     document.getElementById('lead_name').value = '-- Select --';
     PopupFunction();
+    props.setLoad(false);
   }
   const upload_new_project = async ()=>{
+    props.setLoad(true);
     const data=[]
     for (let proj of exceldata){
       if (proj.length > 1) {
@@ -122,6 +148,7 @@ const Projects = () => {
     const result = await response.json();
     console.log("Result",result);
     PopupFunction();
+    props.setLoad(false);
   }
   
   function enableAddProjectPopup() {
@@ -151,6 +178,7 @@ const Projects = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      props.setLoad(true);
 
       /*const response = await fetch('http://127.0.0.1:5000/newemps');
       if (!response.ok) {
@@ -178,9 +206,38 @@ const Projects = () => {
         throw new Error('Network response was not ok');
       }
       const result3 = await response3.json();
+      let red=0;
+      let green=0;
+      let amber=0; 
+      for (let wsr of result3["data"]){
+        if(wsr['rag_status']==="Red"){
+          red=red+1;
+        }
+        else if(wsr['rag_status']==="Amber"){
+          amber=amber+1;
+        }
+        else{
+          green=green+1;
+        }
+      }
+      document.getElementById('rCount').textContent = red;
+      document.getElementById('aCount').textContent = amber;
+      document.getElementById('gCount').textContent = green;
+      const data = {
+        labels: ['Red', 'Green', 'Amber'], // Labels for the segments
+        datasets: [
+          {
+            data: [red, green, amber], // Values corresponding to each label
+            backgroundColor: ['Red', 'Green', 'Yellow'], // Colors for the segments
+            hoverBackgroundColor: ['#FF2C00', '#0077FF', '#FFCC00'], // Hover colors
+          },
+        ],
+      };
+      setPieChartData(data);
       setRAGTable(result3["data"])
        setEmployees(emps);
        setLeads(l);
+       props.setLoad(false);
     };
 
     fetchData(); // Call the function to fetch data
@@ -191,7 +248,7 @@ const Projects = () => {
     <>
 <div id="page_header">
   <h1><span>Projects</span>
-    <button id="add_projects_btn" onClick={enableAddProjectPopup}>+Add</button>
+    {props.auth&&<button id="add_projects_btn" onClick={enableAddProjectPopup}>+Add</button>}
   </h1>
 </div>
 
@@ -222,8 +279,8 @@ const Projects = () => {
       <div id="sub_page_headers">
         <h6>Project Overall Status</h6>
       </div>
-      <div class="p-2">
-        <canvas id="rag-status-chart"></canvas>
+      <div class="p-2" style={{marginLeft:"140px",width:"200px",height:"200px"}}>
+        {pieChartData&&<Pie width={100} height={100} data={pieChartData} options={pieChartDataOptions} />}
       </div>
     </div>
   </div>
@@ -249,19 +306,19 @@ const Projects = () => {
     </div>
   </div>
   <div>
-    <div class="flex justify-between bg-gray-400 p-2 rounded-lg">
+    <div class="flex justify-between bg-orange-400 p-2 rounded-top">
       <div class="w-1/4 text-left font-bold">Project</div>
       <div class="w-1/4 text-left font-bold">RAG Status</div>
       <div class="w-1/4 text-left font-bold">Impediments</div>
       <div class="w-1/4 text-left font-bold">Resource</div>
     </div>
-    <div id="results" class="mt-4 w-full">
+    <div id="results" class="w-full">
       {!ragTable&&<p class="text-center">
         Please select a RAG status to display the tabular report.
       </p>}
       
         {ragTable.map((rag, index) => (
-          <div class="flex justify-between bg-white p-2 rounded-lg mt-2 border border-gray-300">
+          <div class="flex justify-between bg-white p-2 border border-orange-300">
                             <div class="w-1/4 text-left break-words">{rag["project_name"]}</div>
                             <div class="w-1/4 text-left break-words">{rag["rag_status"]}</div>
                             <div class="w-1/4 text-left break-words">{rag["impediments"]}</div>
@@ -406,10 +463,12 @@ const Projects = () => {
     </div>
   </div>
 </div>
-{addNewProject&&<div id='add_project_popup'>
+{addNewProject&&
+  <div id="project_popup">
+  <div id='add_project_popup' style={{marginLeft:'25px',marginTop:'50px'}}>
   <button id='add_project_popup_btn' class="selected ml-3" onClick={()=>{changeAddPojectStatus("Add")}}>Add</button>
   <button id='add_project_popup_btn' onClick={()=>{changeAddPojectStatus("Upload")}}>Upload</button>
-  <button onClick={enableAddProjectPopup} style={{color:'gray',marginLeft:'870px'}}>x</button>
+  <button onClick={enableAddProjectPopup} style={{color:'gray',marginLeft:'850px'}}>x</button>
 <div id="sub_page_box" style={{height:'200px'}}>
   {addPRJ&&
       <form
@@ -419,7 +478,7 @@ const Projects = () => {
         <div class="gap-4">
         <div class="flex flex-row">
         <div class='flex justify-between w-1/2'>
-          <label id="col_label" class='flex justify-between'><span class="text-start">Project Name</span><span class="text-start">:</span></label>
+          <label style={{width:"150px"}} id="col_label" class='flex justify-between'><span class="text-start">Project Name</span><span class="text-start">:</span></label>
           <input
             type="text"
             id="project_name"
@@ -429,7 +488,7 @@ const Projects = () => {
           />
         </div>
         <div class='flex justify-between w-1/2 ml-2'>
-          <label id="col_label" class='flex justify-between'><span class="text-start">Customer Name</span><span class="text-start">:</span></label>
+          <label style={{width:"150px"}} id="col_label" class='flex justify-between'><span class="text-start">Customer Name</span><span class="text-start">:</span></label>
           <input
             type="text"
             id="customer_name"
@@ -441,7 +500,7 @@ const Projects = () => {
         </div>
         <div class="flex flex-row">
         <div class='flex justify-between w-1/2'>
-          <label id="col_label" class='flex justify-between'><span class="text-start">Employee Name</span><span class="text-start">:</span></label>
+          <label style={{width:"150px"}} id="col_label" class='flex justify-between'><span class="text-start">Employee Name</span><span class="text-start">:</span></label>
           <select class="select_Dropdown_Input" name="ResourceName" id="employee_name" style={{width:"350px"}}>
                       {employees.map((resouce, index) => (
             <option key={index} value={resouce}>
@@ -451,7 +510,7 @@ const Projects = () => {
           </select>
         </div>
         <div class='flex justify-between w-1/2  ml-2'>
-          <label id="col_label" class='flex justify-between'><span class="text-start">Lead Name</span><span class="text-start">:</span></label>
+          <label style={{width:"150px"}} id="col_label" class='flex justify-between'><span class="text-start">Lead Name</span><span class="text-start">:</span></label>
           <select class="select_Dropdown_Input" name="PracticeLead" id="lead_name" style={{width:"350px"}}>
                       {leads.map((lead, index) => (
             <option key={index} value={lead}>
@@ -471,9 +530,12 @@ const Projects = () => {
         </button>
       </div>}
     </div>
+    </div>
     </div>}
+    <div id="loading_popup" class='hidden'>
     <div id="popup">
         <span class="popuptext" id="myPopup"></span>
+    </div>
     </div>
     </>
     );

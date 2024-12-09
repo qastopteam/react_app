@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from 'react';
 
-const DEActionItems = () => {
+const DEActionItems = (props) => {
     const [currentTracker, setcurrentTracker] = useState("Action Items for Practice - Request");
     const [currentSelectedTracker, setcurrentSelectedTracker] = useState("Request");
     const [employees, setEmployees] = useState(['-- Select --']);
@@ -148,13 +148,17 @@ const DEActionItems = () => {
       var popup = document.getElementById("myPopup");
       popup.textContent = `${Tracker}`;
         popup.classList.add('custom-background');
+        const end_popup = document.getElementById("loading_popup");
+        end_popup.classList.toggle("hidden");
       //popup.classList.toggle("show");
       setTimeout(function () {
             popup.textContent = "";
           popup.classList.remove('custom-background');
+          end_popup.classList.toggle("hidden");
         }, 5000);
     }
     function sendInput() {
+        props.setLoad(true);
         let selectElement =document.getElementById("ChooseTracker");
         let Tracker =
             selectElement.options
@@ -222,6 +226,14 @@ const DEActionItems = () => {
           .then((json) => console.log(json));
 
           PopupFunction("Request Submitted Successfully");
+          document.getElementById("ChooseRequestType").value="-- Select --";
+          document.getElementById("Requesspanescription").value="";
+          document.getElementById("emp_name").value="-- Select --";
+          document.getElementById("client_name").value="";
+          document.getElementById("delivery_lead").value="";
+          document.getElementById("area").value="-- Select --";
+          document.getElementById("primary-contact").value="";
+          document.getElementById("secondary-contact").value="";
              //selectElement.value=Tracker;
                //getChooseTracker();
          }}
@@ -260,6 +272,9 @@ const DEActionItems = () => {
              .then((json) => console.log(json));
 
              PopupFunction("Feedback Submitted Successfully");
+             document.getElementById("AreastoImprove").value="";
+             document.getElementsByName('rate').value="";
+             document.getElementsByName('rate1').value="";
                 //selectElement.value=Tracker;
                   //getChooseTracker();
             }
@@ -268,11 +283,13 @@ const DEActionItems = () => {
             }
             }
         }
+        props.setLoad(false);
     }
 
 
     useEffect(() => {
         const fetchData = async () => {
+            props.setLoad(true);
 
           /*const response = await fetch('http://127.0.0.1:5000/newemps');
           if (!response.ok) {
@@ -298,6 +315,7 @@ const DEActionItems = () => {
            }
            setEmployees(emps);
            setEmployeeNames(emp_names);
+           props.setLoad(false);
         };
     
         fetchData(); // Call the function to fetch data
@@ -385,12 +403,12 @@ const DEActionItems = () => {
             </div>
             <div><span id="request_type_alert"></span></div>
             <div class='filters'>
-                <label id="col_label" class='flex justify-between'><span class="text-start">Point Of Contact - Primary*</span><span class="text-start">:</span></label>
+                <label id="col_label" class='flex justify-between'><span class="text-start">POC - Primary*</span><span class="text-start">:</span></label>
                 <span><input style={{width:'350px'}} class="text_Input" type="text" id="primary-contact" placeholder="Point Of Contact - Primary" /></span>
             </div>
             <div><span id="request_description_alert"></span></div>
             <div class='filters'>
-                <label id="col_label" class='flex justify-between'><span class="text-start">Point Of Contact - Secondary*</span><span class="text-start">:</span></label>
+                <label id="col_label" class='flex justify-between'><span class="text-start">POC - Secondary*</span><span class="text-start">:</span></label>
                 <span><input style={{width:'350px'}} class="text_Input" type="text" id="secondary-contact" placeholder="Point Of Contact - Secondary" /></span>
             </div>
             <div><span id="request_description_alert"></span></div>
@@ -403,12 +421,12 @@ const DEActionItems = () => {
             }
             {currentTracker=="Action Items for Practice - Feedback"&&<div>
         <div class='filters'>
-            <label id="col_label" class='flex justify-between'><span class="text-start">Areas to Improve*</span><span class="text-start">:</span></label>
+            <label id="col_label" class='flex justify-between'><span style={{width:'180px'}} class="text-start">Areas to Improve*</span><span class="text-start">:</span></label>
             <span><textarea class="text_Input" id="AreastoImprove" onChange={getAreastoImprove} placeholder="Enter Areas to Improve"></textarea></span>
         </div>
         <div><span id="areas_to_improve_alert"></span></div>
         <div class='filters'>
-            <label id="col_label" class='flex justify-between'><span class="text-start">Rate us on Request provided</span><span class="text-start">:</span></label>
+            <label id="col_label" class='flex justify-between'><span style={{width:'180px'}} class="text-start">Rate us on Request provided</span><span class="text-start">:</span></label>
             <span>  <div class="rate">
                     <input onclick="sendInput(5)" type="radio" id="star5" name="rate" value="5" />
                     <label for="star5" title="text">5 stars</label>
@@ -424,7 +442,7 @@ const DEActionItems = () => {
             </span>
         </div>
         <div class='filters'>
-            <label id="col_label" class='flex justify-between'><span class="text-start">Rate us on L&D provided</span><span class="text-start">:</span></label>
+            <label id="col_label" class='flex justify-between'><span style={{width:'180px'}} class="text-start">Rate us on L&D provided</span><span class="text-start">:</span></label>
             <span>  <div class="rate1">
                     <input type="radio" id="star51" name="rate1" value="5" />
                     <label for="star51" title="text">5 stars</label>
@@ -440,13 +458,15 @@ const DEActionItems = () => {
             </span>
         </div>
         </div>}
-    <button class="default_Button" id="Submit_Button" onClick={sendInput}>
+    <button class="default_Button" onClick={sendInput}>
             Submit
         </button>
         <label id="alert"></label>
         </div>
+        <div id="loading_popup" class='hidden'>
         <div id="popup">
         <span class="popuptext" id="myPopup"></span>
+    </div>
     </div>
     </div>
         </>

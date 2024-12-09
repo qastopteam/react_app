@@ -2,7 +2,7 @@ import React, {useState, useEffect } from 'react';
 import * as XLSX from 'xlsx';
 import { format } from 'date-fns';
 
-const DataEndivyWSR = () => {
+const DataEndivyWSR = (props) => {
     const [employees, setEmployees] = useState([]);
     const [leads, setLeads] = useState(['-- Select --']);
     const [resources, setResources] = useState(['-- Select --']);
@@ -147,13 +147,17 @@ const DataEndivyWSR = () => {
       var popup = document.getElementById("myPopup");
       popup.textContent = `${tracker}`;
         popup.classList.add('custom-background');
+        const end_popup = document.getElementById("loading_popup");
+        end_popup.classList.toggle("hidden");
       //popup.classList.toggle("show");
       setTimeout(function () {
             popup.textContent = "";
           popup.classList.remove('custom-background');
+          end_popup.classList.toggle("hidden");
         }, 5000);
     }
     const upload_new_project = async ()=>{
+      props.setLoad(true);
         const data=[]
         for (let wsr of exceldata){
           if (wsr.length > 1) {
@@ -188,8 +192,10 @@ const DataEndivyWSR = () => {
         const result = await response.json();
         console.log("Result",result);
         PopupFunction("WSR Uploaded Successfully");
+        props.setLoad(false);
       }
     async function sendInput() {
+      props.setLoad(true);
         let tracker ="Weekly RAG Status"
         let selectElement =document.getElementById("PracticeLead");
         let practice_lead =selectElement.options[selectElement.selectedIndex].textContent;
@@ -271,11 +277,24 @@ const DataEndivyWSR = () => {
 
           PopupFunction("WSR Form Submitted Successflly");
                getChoosetracker();
+               document.getElementById("PracticeLead").value="-- Select --";
+               document.getElementById("ResourceName").value="-- Select --";
+               document.getElementById("ProjectName").value="-- Select --";
+               document.getElementById("RAGStatus").value="-- Select --";
+               document.getElementById("TestingType").value="-- Select --";
+               document.getElementById("WeeklyDeliverable").value="";
+               document.getElementById("SubTasks").value="";
+              document.getElementById("Impediments").value="";
+              document.getElementById("ActionItems").value="";
+              document.getElementById("Comments").value="";
+              document.getElementById("Starspanate").value="";
+              document.getElementById("EndDate").value="";
+
          }
          else{
          AlertFunc();
          }
-        
+         props.setLoad(false);
     }
 
     useEffect(() => {
@@ -284,6 +303,7 @@ const DataEndivyWSR = () => {
     
       useEffect(() => {
         const fetchData = async () => {
+          props.setLoad(true);
 
           /*const response = await fetch('http://127.0.0.1:5000/newemps');
           if (!response.ok) {
@@ -311,6 +331,7 @@ const DataEndivyWSR = () => {
            }
            setEmployees(emps);
            setLeads(l);
+           props.setLoad(false);
         };
     
         fetchData(); // Call the function to fetch data
@@ -428,7 +449,7 @@ const DataEndivyWSR = () => {
             </span>
         </div>
         </div>
-        <button class="default_Button" id="Submit_Button" onClick={sendInput}>
+        <button class="default_Button" style={{marginLeft:'20px',marginRight:'20px'}} onClick={sendInput}>
             Submit
         </button>
         <button class="default_Button" onClick={()=>{setuppopup(true)}}>
@@ -438,13 +459,15 @@ const DataEndivyWSR = () => {
         </div>
     </div>
 </div>
-    <div id="popup">
+    <div id="loading_popup" class='hidden'>
+      <div id="popup">
         <span class="popuptext" id="myPopup"></span>
+      </div>
     </div>
     {uppopup&&
-    <div id='add_project_popup'>
-    <button onClick={()=>{setuppopup(false)}} style={{color:'gray',marginLeft:'1000px'}}>x</button>
-    <div id="sub_page_box" style={{height:'200px'}}>
+    <div id="loading_popup">
+    <div id="sub_page_box" style={{height:'200px',marginLeft:'50px'}}>
+    <button onClick={()=>{setuppopup(false)}} style={{color:'gray',marginLeft:'800px'}}>x</button>
     <div class="mt-4 p-2">
         <input type="file" id="upload-file" accept=".csv, .xlsx" onChange={handleFileChange}/>
         <button id="upload-button" class="default_Button d-block" onClick={upload_new_project}>
@@ -452,7 +475,8 @@ const DataEndivyWSR = () => {
         </button>
       </div>
     </div>
-    </div>}
+    </div>
+    }
     </>
     );
 };
