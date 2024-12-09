@@ -140,9 +140,9 @@ const App = () => {
       <div id='GLoginPage'>
         <div id='GLoginPageBox'>
         <h1>Hello, Welcome</h1>
-      <GoogleOAuthProvider clientId="611470481779-334191i2j4pp66f893f9lm8r9thivhi8.apps.googleusercontent.com">
+      <GoogleOAuthProvider clientId="611470481779-ukm8vk39d1ma7n3jojgforu1a0a56ba7.apps.googleusercontent.com">
             <GoogleLogin
-            clientId="611470481779-334191i2j4pp66f893f9lm8r9thivhi8.apps.googleusercontent.com"
+            clientId="611470481779-ukm8vk39d1ma7n3jojgforu1a0a56ba7.apps.googleusercontent.com"
             buttonText="Login with Google"
             onSuccess={handleSuccess}
             onFailure={handleError}
@@ -162,7 +162,7 @@ const App = () => {
                 <img onClick={()=>{setUserTab(false)}} src={MyImage} alt="Description of the image" style={{ width: '140px', height: '55px', marginRight:"1100px" }}/>
                 {user && (<img onClick={()=>{setUserTab(true)}} style={{ width: '45px', height: '45px', borderRadius:"40px",marginTop:'10px'}} src={user.picture} alt="Profile" />)}
                 {user && userTab &&<div id='logout_popup'> 
-                    <GoogleOAuthProvider clientId="611470481779-334191i2j4pp66f893f9lm8r9thivhi8.apps.googleusercontent.com">
+                    <GoogleOAuthProvider clientId="611470481779-ukm8vk39d1ma7n3jojgforu1a0a56ba7.apps.googleusercontent.com">
                     <div>
                     <img style={{ width: '55px', height: '55px', borderRadius:"40px",display:'inline',marginLeft:'25px'}} src={user.picture} alt="Profile" />
                     <button id='logout_button' onClick={handleLogout} >Logout</button>
